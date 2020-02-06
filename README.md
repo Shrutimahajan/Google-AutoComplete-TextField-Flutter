@@ -1,6 +1,28 @@
 # google_places_flutter
 
-Google Places Autocomplete TextField
+# Add dependency into pubspec.yml
+
+```
+dependencies:
+  flutter:
+    sdk: flutter
+  google_places_flutter: <last-version>
+  
+```  
+
+# Google AutoComplete TextField Widget code
+
+
+```
+GooglePlaceAutoCompleteTextField(
+        textEditingController: controller,
+        googleAPIKey: "",
+        inputDecoration: InputDecoration()
+        debounceTime: 800 // default 600 ms ,
+        )
+```
+# Customization Option
+ You can customize a text field input decoration and debounce time 
 
 
 
