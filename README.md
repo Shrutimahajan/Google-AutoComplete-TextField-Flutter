@@ -14,12 +14,13 @@ dependencies:
 
 
 ```
-GooglePlaceAutoCompleteTextField(
+    GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey: "",
+        googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration()
-        debounceTime: 800 // default 600 ms ,
-        )
+        debounceTime: 800 // default 600 ms
+    )
+    
 ```
 # Customization Option
  You can customize a text field input decoration and debounce time 
