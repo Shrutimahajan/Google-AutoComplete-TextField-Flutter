@@ -18,7 +18,11 @@ dependencies:
         textEditingController: controller,
         googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration()
-        debounceTime: 800 // default 600 ms
+        debounceTime: 800 // default 600 ms,
+        itmClick: (Prediction prediction) {
+         controller.text=prediction.description;
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description.length));
+        }
     )
     
 ```
