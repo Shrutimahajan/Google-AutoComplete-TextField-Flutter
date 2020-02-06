@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:google_places_flutter/model/prediction.dart';
 
 void main() => runApp(MyApp());
 
@@ -67,9 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
   placesAutoCompleteTextField() {
     return GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey: "",
+        googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration(),
-        debounceTime: 8000 // default 600 ms ,
+        debounceTime: 8000 ,
+        itmClick: (Prediction prediction) {
+          controller.text=prediction.description;
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description.length));
+        }
+      // default 600 ms ,
         );
   }
 }
