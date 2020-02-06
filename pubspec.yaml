@@ -1,8 +1,8 @@
 name: google_places_flutter
 description: Google Place Autocomplete TextField
 version: 0.0.3
-author:
-homepage:
+author: Shruti Mahajan <shruti.sm87@gmail.com>
+homepage: https://github.com/Shrutimahajan/Google-AutoComplete-TextField-Flutter
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
