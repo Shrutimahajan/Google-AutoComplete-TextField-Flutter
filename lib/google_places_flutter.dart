@@ -1,7 +1,4 @@
 library google_places_flutter;
-
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
@@ -32,7 +29,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
 
 class _GooglePlaceAutoCompleteTextFieldState
     extends State<GooglePlaceAutoCompleteTextField> {
-  final FocusNode _focusNode = FocusNode();
+
   final subject = new PublishSubject<String>();
   OverlayEntry _overlayEntry;
   List<Prediction> alPredictions = new List();
@@ -127,8 +124,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                                 widget.itmClick(alPredictions[index]);
                                 removeOverlay();
                               }
-                              //this._overlayEntry.remove();
-                              //controller.text = alPredictions[index].description;
+
                             },
                             child: Container(
                                 padding: EdgeInsets.all(10),

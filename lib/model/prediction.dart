@@ -36,13 +36,13 @@ class Prediction {
 
   Prediction(
       {this.description,
-        this.id,
-        this.matchedSubstrings,
-        this.placeId,
-        this.reference,
-        this.structuredFormatting,
-        this.terms,
-        this.types});
+      this.id,
+      this.matchedSubstrings,
+      this.placeId,
+      this.reference,
+      this.structuredFormatting,
+      this.terms,
+      this.types});
 
   Prediction.fromJson(Map<String, dynamic> json) {
     description = json['description'];
@@ -112,8 +112,7 @@ class StructuredFormatting {
 
   String secondaryText;
 
-  StructuredFormatting(
-      {this.mainText, this.secondaryText});
+  StructuredFormatting({this.mainText, this.secondaryText});
 
   StructuredFormatting.fromJson(Map<String, dynamic> json) {
     mainText = json['main_text'];
