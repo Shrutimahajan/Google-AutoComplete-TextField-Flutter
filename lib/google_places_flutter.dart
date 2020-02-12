@@ -4,6 +4,7 @@ import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:rxdart/subjects.dart';
 import 'package:dio/dio.dart';
+import 'package:rxdart/rxdart.dart';
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
