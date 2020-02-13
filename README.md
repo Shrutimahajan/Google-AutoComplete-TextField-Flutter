@@ -29,5 +29,6 @@ dependencies:
 # Customization Option
  You can customize a text field input decoration and debounce time 
 
-<img src="https://github.com/lejard-h/flutter_google_places/blob/master/flutter_02.png" height="400">
+# Screenshorts
+<img src="sample.jpg" height="400">
 
