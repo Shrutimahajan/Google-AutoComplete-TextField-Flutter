@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Custom Autocomplete sample'),
     );
   }
 }
@@ -67,19 +67,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   placesAutoCompleteTextField() {
-    return GooglePlaceAutoCompleteTextField(
-        textEditingController: controller,
-        googleAPIKey: "YOUR_GOOGLE_API_KEY",
-        //"YOUR_GOOGLE_API_KEY",
-        inputDecoration: InputDecoration(),
-        debounceTime: 8000,
-        country_code: "in",
-        itmClick: (Prediction prediction) {
-          controller.text = prediction.description;
-          controller.selection = TextSelection.fromPosition(
-              TextPosition(offset: prediction.description.length));
-        }
-        // default 600 ms ,
-        );
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: GooglePlaceAutoCompleteTextField(
+          textEditingController: controller,
+          googleAPIKey: "YOUR_GOOGLE_API_KEY",
+          //"YOUR_GOOGLE_API_KEY",
+          inputDecoration: InputDecoration(hintText: "Search your location"),
+          debounceTime: 8000,
+          country_code: "in",
+          itmClick: (Prediction prediction) {
+            controller.text = prediction.description;
+            controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: prediction.description.length));
+          }
+          // default 600 ms ,
+          ),
+    );
   }
 }
