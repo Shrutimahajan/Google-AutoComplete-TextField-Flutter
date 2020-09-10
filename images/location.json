@@ -1,0 +1,275 @@
+{
+  "predictions": [
+    {
+      "description": "Hair Raiserz 11 Phase Mohali, Phase 11, Tarf Kumbra, Sahibzada Ajit Singh Nagar, Punjab, India",
+      "id": "183a9e6a6a44119efe479fafecb46f3356a32502",
+      "matched_substrings": [
+        {
+          "length": 28,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJExSsL-XtDzkR-uWaH16wRS4",
+      "reference": "ChIJExSsL-XtDzkR-uWaH16wRS4",
+      "structured_formatting": {
+        "main_text": "Hair Raiserz 11 Phase Mohali",
+        "main_text_matched_substrings": [
+          {
+            "length": 28,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Phase 11, Tarf Kumbra, Sahibzada Ajit Singh Nagar, Punjab, India"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "Hair Raiserz 11 Phase Mohali"
+        },
+        {
+          "offset": 30,
+          "value": "Phase 11"
+        },
+        {
+          "offset": 40,
+          "value": "Tarf Kumbra"
+        },
+        {
+          "offset": 53,
+          "value": "Sahibzada Ajit Singh Nagar"
+        },
+        {
+          "offset": 81,
+          "value": "Punjab"
+        },
+        {
+          "offset": 89,
+          "value": "India"
+        }
+      ],
+      "types": [
+        "beauty_salon",
+        "hair_care",
+        "spa",
+        "point_of_interest",
+        "clothing_store",
+        "store",
+        "establishment"
+      ]
+    },
+    {
+      "description": "Phase 11 Police Station, Phase 11, Sector 65, Sahibzada Ajit Singh Nagar, Punjab, India",
+      "id": "ca5a8d10496953dc1a849026b6677f91a1762c29",
+      "matched_substrings": [
+        {
+          "length": 23,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJqZZ5agTsDzkRnHH41Fcp62E",
+      "reference": "ChIJqZZ5agTsDzkRnHH41Fcp62E",
+      "structured_formatting": {
+        "main_text": "Phase 11 Police Station",
+        "main_text_matched_substrings": [
+          {
+            "length": 23,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Phase 11, Sector 65, Sahibzada Ajit Singh Nagar, Punjab, India"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "Phase 11 Police Station"
+        },
+        {
+          "offset": 25,
+          "value": "Phase 11"
+        },
+        {
+          "offset": 35,
+          "value": "Sector 65"
+        },
+        {
+          "offset": 46,
+          "value": "Sahibzada Ajit Singh Nagar"
+        },
+        {
+          "offset": 74,
+          "value": "Punjab"
+        },
+        {
+          "offset": 82,
+          "value": "India"
+        }
+      ],
+      "types": [
+        "police",
+        "point_of_interest",
+        "establishment"
+      ]
+    },
+    {
+      "description": "ICICI Bank - Phase 11, Mohali - Branch & ATM, Tarf Kumbra, Sahibzada Ajit Singh Nagar, Punjab, India",
+      "id": "631c94df6822a04abd55c6584d974890b1051201",
+      "matched_substrings": [
+        {
+          "length": 44,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJScGk1AfsDzkRB0f0mMpaq4A",
+      "reference": "ChIJScGk1AfsDzkRB0f0mMpaq4A",
+      "structured_formatting": {
+        "main_text": "ICICI Bank - Phase 11, Mohali - Branch & ATM",
+        "main_text_matched_substrings": [
+          {
+            "length": 44,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Tarf Kumbra, Sahibzada Ajit Singh Nagar, Punjab, India"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "ICICI Bank - Phase 11, Mohali - Branch & ATM"
+        },
+        {
+          "offset": 46,
+          "value": "Tarf Kumbra"
+        },
+        {
+          "offset": 59,
+          "value": "Sahibzada Ajit Singh Nagar"
+        },
+        {
+          "offset": 87,
+          "value": "Punjab"
+        },
+        {
+          "offset": 95,
+          "value": "India"
+        }
+      ],
+      "types": [
+        "atm",
+        "bank",
+        "finance",
+        "point_of_interest",
+        "establishment"
+      ]
+    },
+    {
+      "description": "Adarsh Classic 11th Phase, Kunj Nagar, Adarsh Nagar, Sonari, Jamshedpur, Jharkhand, India",
+      "id": "67f642ab4e5ffeb0cdd2d4bc1de9fa708ced4ead",
+      "matched_substrings": [
+        {
+          "length": 25,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJVVVVFXHk9TkRXBVTVDKGo6c",
+      "reference": "ChIJVVVVFXHk9TkRXBVTVDKGo6c",
+      "structured_formatting": {
+        "main_text": "Adarsh Classic 11th Phase",
+        "main_text_matched_substrings": [
+          {
+            "length": 25,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Kunj Nagar, Adarsh Nagar, Sonari, Jamshedpur, Jharkhand, India"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "Adarsh Classic 11th Phase"
+        },
+        {
+          "offset": 27,
+          "value": "Kunj Nagar"
+        },
+        {
+          "offset": 39,
+          "value": "Adarsh Nagar"
+        },
+        {
+          "offset": 53,
+          "value": "Sonari"
+        },
+        {
+          "offset": 61,
+          "value": "Jamshedpur"
+        },
+        {
+          "offset": 73,
+          "value": "Jharkhand"
+        },
+        {
+          "offset": 84,
+          "value": "India"
+        }
+      ],
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ]
+    },
+    {
+      "description": "Phase 11 Market Parking Area, Phase 11, Sector 65, Sahibzada Ajit Singh Nagar, Punjab, India",
+      "id": "6163f263c1d1375137292e9dbae22e7405aea5b2",
+      "matched_substrings": [
+        {
+          "length": 28,
+          "offset": 0
+        }
+      ],
+      "place_id": "ChIJDdDbeQ_sDzkR-F1FIVq70w0",
+      "reference": "ChIJDdDbeQ_sDzkR-F1FIVq70w0",
+      "structured_formatting": {
+        "main_text": "Phase 11 Market Parking Area",
+        "main_text_matched_substrings": [
+          {
+            "length": 28,
+            "offset": 0
+          }
+        ],
+        "secondary_text": "Phase 11, Sector 65, Sahibzada Ajit Singh Nagar, Punjab, India"
+      },
+      "terms": [
+        {
+          "offset": 0,
+          "value": "Phase 11 Market Parking Area"
+        },
+        {
+          "offset": 30,
+          "value": "Phase 11"
+        },
+        {
+          "offset": 40,
+          "value": "Sector 65"
+        },
+        {
+          "offset": 51,
+          "value": "Sahibzada Ajit Singh Nagar"
+        },
+        {
+          "offset": 79,
+          "value": "Punjab"
+        },
+        {
+          "offset": 87,
+          "value": "India"
+        }
+      ],
+      "types": [
+        "point_of_interest",
+        "establishment"
+      ]
+    }
+  ],
+  "status": "OK"
+}

@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height:20),
+            SizedBox(height: 20),
             placesAutoCompleteTextField(),
           ],
         ),
@@ -70,13 +70,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
         googleAPIKey: "YOUR_GOOGLE_API_KEY",
+        //"YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration(),
-        debounceTime: 8000 ,
+        debounceTime: 8000,
+        country_code: "in",
         itmClick: (Prediction prediction) {
-          controller.text=prediction.description;
-          controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description.length));
+          controller.text = prediction.description;
+          controller.selection = TextSelection.fromPosition(
+              TextPosition(offset: prediction.description.length));
         }
-      // default 600 ms ,
+        // default 600 ms ,
         );
   }
 }

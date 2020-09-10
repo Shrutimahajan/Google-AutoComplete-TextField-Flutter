@@ -1,5 +1,9 @@
 library google_places_flutter;
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:rxdart/subjects.dart';
@@ -12,7 +16,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   TextStyle textStyle;
   String googleAPIKey;
   int debounceTime = 600;
-
+String country_code;
   TextEditingController textEditingController = TextEditingController();
 
   GooglePlaceAutoCompleteTextField(
@@ -21,7 +25,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.debounceTime: 600,
       this.inputDecoration: const InputDecoration(),
       this.itmClick,
-      this.textStyle: const TextStyle()});
+
+      this.textStyle: const TextStyle(),this.country_code});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -30,7 +35,6 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
 
 class _GooglePlaceAutoCompleteTextFieldState
     extends State<GooglePlaceAutoCompleteTextField> {
-
   final subject = new PublishSubject<String>();
   OverlayEntry _overlayEntry;
   List<Prediction> alPredictions = new List();
@@ -54,18 +58,22 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   getLocation(String text) async {
     Dio dio = new Dio();
-    String url =
-        "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?key=${widget.googleAPIKey}&input=$text";
+    String url="https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&types=establishment&radius=500&key=${widget.googleAPIKey}";
+
+    if(widget.country_code!=null){
+      // in
+      url=url+"&components=country:${widget.country_code}";
+    }
 
     Response response = await dio.get(url);
-    //print("url"+url);
-
-    print("respinseee" +
-        response.statusCode.toString() +
-        " " +
-        response.data.toString());
     PlacesAutocompleteResponse subscriptionResponse =
-        PlacesAutocompleteResponse.fromJson(response.data);
+    PlacesAutocompleteResponse.fromJson(response.data);
+
+//    String res = await DefaultAssetBundle.of(context).loadString('images/location.json');
+//    PlacesAutocompleteResponse subscriptionResponse =
+//        PlacesAutocompleteResponse.fromJson(json.decode(res));
+    print("respinseee" + response.statusCode.toString() + " "+url);
+
     if (text.length == 0) {
       alPredictions.clear();
       this._overlayEntry.remove();
@@ -125,7 +133,6 @@ class _GooglePlaceAutoCompleteTextFieldState
                                 widget.itmClick(alPredictions[index]);
                                 removeOverlay();
                               }
-
                             },
                             child: Container(
                                 padding: EdgeInsets.all(10),
