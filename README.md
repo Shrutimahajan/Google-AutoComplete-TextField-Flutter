@@ -19,7 +19,7 @@ dependencies:
         googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration()
         debounceTime: 800 // default 600 ms,
-         country_code: "in",// optional by default null is set
+           countries: ["in","fr"],// optional by default null is set
         itmClick: (Prediction prediction) {
          controller.text=prediction.description;
           controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description.length));

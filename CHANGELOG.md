@@ -5,3 +5,8 @@
 ## 2.0.0
 
 * Support country code
+
+## 2.0.1
+
+* Support multiple countries
+
