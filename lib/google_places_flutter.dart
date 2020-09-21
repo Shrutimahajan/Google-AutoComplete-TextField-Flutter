@@ -72,7 +72,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 //    String res = await DefaultAssetBundle.of(context).loadString('images/location.json');
 //    PlacesAutocompleteResponse subscriptionResponse =
 //        PlacesAutocompleteResponse.fromJson(json.decode(res));
-    print("respinseee" + response.statusCode.toString() + " "+url);
+//    print("respinseee" + response.statusCode.toString() + " "+url);
 
     if (text.length == 0) {
       alPredictions.clear();
