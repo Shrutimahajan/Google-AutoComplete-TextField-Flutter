@@ -72,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
       child: GooglePlaceAutoCompleteTextField(
           textEditingController: controller,
           googleAPIKey: "YOUR_GOOGLE_API_KEY",
-          //"YOUR_GOOGLE_API_KEY",
           inputDecoration: InputDecoration(hintText: "Search your location"),
           debounceTime: 800,
           country_code: "in",
