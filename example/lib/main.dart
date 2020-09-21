@@ -74,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
           googleAPIKey: "YOUR_GOOGLE_API_KEY",
           inputDecoration: InputDecoration(hintText: "Search your location"),
           debounceTime: 800,
-          country_code: "in",
+          countries: ["in","fr"],
           itmClick: (Prediction prediction) {
             controller.text = prediction.description;
             controller.selection = TextSelection.fromPosition(

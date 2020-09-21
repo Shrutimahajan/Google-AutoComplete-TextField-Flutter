@@ -16,7 +16,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   TextStyle textStyle;
   String googleAPIKey;
   int debounceTime = 600;
-String country_code;
+  List<String> countries = List();
   TextEditingController textEditingController = TextEditingController();
 
   GooglePlaceAutoCompleteTextField(
@@ -25,8 +25,8 @@ String country_code;
       this.debounceTime: 600,
       this.inputDecoration: const InputDecoration(),
       this.itmClick,
-
-      this.textStyle: const TextStyle(),this.country_code});
+      this.textStyle: const TextStyle(),
+      this.countries});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -58,16 +58,28 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   getLocation(String text) async {
     Dio dio = new Dio();
-    String url="https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&types=establishment&radius=500&key=${widget.googleAPIKey}";
+    String url =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&types=establishment&radius=500&key=${widget.googleAPIKey}";
 
-    if(widget.country_code!=null){
+    if (widget.countries != null) {
       // in
-      url=url+"&components=country:${widget.country_code}";
+
+      for (int i = 0; i < widget.countries.length; i++) {
+        String country = widget.countries[i];
+
+        if (i == 0) {
+          url = url + "&components=country:$country";
+        } else {
+          url = url + "|" + "country:" + country;
+        }
+      }
     }
+
+    print("url" + url);
 
     Response response = await dio.get(url);
     PlacesAutocompleteResponse subscriptionResponse =
-    PlacesAutocompleteResponse.fromJson(response.data);
+        PlacesAutocompleteResponse.fromJson(response.data);
 
 //    String res = await DefaultAssetBundle.of(context).loadString('images/location.json');
 //    PlacesAutocompleteResponse subscriptionResponse =
