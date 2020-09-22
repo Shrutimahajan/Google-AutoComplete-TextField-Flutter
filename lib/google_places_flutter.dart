@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:rxdart/subjects.dart';
@@ -13,6 +14,8 @@ import 'package:rxdart/rxdart.dart';
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
   ItemClick itmClick;
+  GetLatLng getLatLng;
+
   TextStyle textStyle;
   String googleAPIKey;
   int debounceTime = 600;
@@ -26,7 +29,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.inputDecoration: const InputDecoration(),
       this.itmClick,
       this.textStyle: const TextStyle(),
-      this.countries});
+      this.countries,this.getLatLng});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -143,6 +146,9 @@ class _GooglePlaceAutoCompleteTextFieldState
                             onTap: () {
                               if (index < alPredictions.length) {
                                 widget.itmClick(alPredictions[index]);
+                                getPlaceDetailsFromPlaceId(
+                                    alPredictions[index]);
+
                                 removeOverlay();
                               }
                             },
@@ -165,10 +171,36 @@ class _GooglePlaceAutoCompleteTextFieldState
       this._overlayEntry.markNeedsBuild();
     }
   }
+
+  Future<Response> getPlaceDetailsFromPlaceId(Prediction prediction) async {
+    //String key = GlobalConfiguration().getString('google_maps_key');
+    var url =
+        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+    Response response = await Dio().get(
+      url,
+    );
+
+    PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
+
+    prediction.lat = placeDetails.result.geometry.location.lat.toString();
+    prediction.lng = placeDetails.result.geometry.location.lng.toString();
+
+
+    widget.getLatLng(prediction);
+
+//    prediction.latLng = new LatLng(
+//        placeDetails.result.geometry.location.lat,
+//        placeDetails.result.geometry.location.lng);
+  }
 }
 
 PlacesAutocompleteResponse parseResponse(Map responseBody) {
   return PlacesAutocompleteResponse.fromJson(responseBody);
 }
 
+PlaceDetails parsePlaceDetailMap(Map responseBody) {
+  return PlaceDetails.fromJson(responseBody);
+}
+
 typedef ItemClick = void Function(Prediction postalCodeResponse);
+typedef GetLatLng = void Function(Prediction postalCodeResponse);

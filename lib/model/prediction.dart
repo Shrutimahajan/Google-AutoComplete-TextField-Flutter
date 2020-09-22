@@ -33,6 +33,8 @@ class Prediction {
   StructuredFormatting structuredFormatting;
   List<Terms> terms;
   List<String> types;
+  String lat;
+  String lng;
 
   Prediction(
       {this.description,
@@ -42,7 +44,9 @@ class Prediction {
       this.reference,
       this.structuredFormatting,
       this.terms,
-      this.types});
+      this.types,
+      this.lat,
+      this.lng});
 
   Prediction.fromJson(Map<String, dynamic> json) {
     description = json['description'];
@@ -65,6 +69,8 @@ class Prediction {
       });
     }
     types = json['types'].cast<String>();
+    lat = json['lat'];
+    lng = json['lng'];
   }
 
   Map<String, dynamic> toJson() {
@@ -84,6 +90,9 @@ class Prediction {
       data['terms'] = this.terms.map((v) => v.toJson()).toList();
     }
     data['types'] = this.types;
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
+
     return data;
   }
 }
