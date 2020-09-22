@@ -75,8 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
           inputDecoration: InputDecoration(hintText: "Search your location"),
           debounceTime: 800,
           countries: ["in", "fr"],
-          getLatLng: (Prediction prediction) {
-            print("LatLnggg" + prediction.lng.toString());
+          isLatLngRequired: true,
+          getPlaceDetailWithLatLng: (Prediction prediction) {
+            print("placeDetails" + prediction.lng.toString());
           },
           itmClick: (Prediction prediction) {
             controller.text = prediction.description;

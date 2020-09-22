@@ -14,7 +14,8 @@ import 'package:rxdart/rxdart.dart';
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
   ItemClick itmClick;
-  GetLatLng getLatLng;
+  GetPlaceDetailswWithLatLng getPlaceDetailWithLatLng;
+  bool isLatLngRequired = true;
 
   TextStyle textStyle;
   String googleAPIKey;
@@ -28,8 +29,11 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.debounceTime: 600,
       this.inputDecoration: const InputDecoration(),
       this.itmClick,
+      this.isLatLngRequired=true,
       this.textStyle: const TextStyle(),
-      this.countries,this.getLatLng});
+      this.countries,
+      this.getPlaceDetailWithLatLng,
+      });
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -146,6 +150,8 @@ class _GooglePlaceAutoCompleteTextFieldState
                             onTap: () {
                               if (index < alPredictions.length) {
                                 widget.itmClick(alPredictions[index]);
+                                if (!widget.isLatLngRequired) return;
+
                                 getPlaceDetailsFromPlaceId(
                                     alPredictions[index]);
 
@@ -174,6 +180,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   Future<Response> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
+
     var url =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     Response response = await Dio().get(
@@ -185,8 +192,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     prediction.lat = placeDetails.result.geometry.location.lat.toString();
     prediction.lng = placeDetails.result.geometry.location.lng.toString();
 
-
-    widget.getLatLng(prediction);
+    widget.getPlaceDetailWithLatLng(prediction);
 
 //    prediction.latLng = new LatLng(
 //        placeDetails.result.geometry.location.lat,
@@ -203,4 +209,5 @@ PlaceDetails parsePlaceDetailMap(Map responseBody) {
 }
 
 typedef ItemClick = void Function(Prediction postalCodeResponse);
-typedef GetLatLng = void Function(Prediction postalCodeResponse);
+typedef GetPlaceDetailswWithLatLng = void Function(
+    Prediction postalCodeResponse);
