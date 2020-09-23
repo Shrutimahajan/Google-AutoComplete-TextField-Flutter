@@ -82,16 +82,11 @@ class _GooglePlaceAutoCompleteTextFieldState
       }
     }
 
-    print("url" + url);
+
 
     Response response = await dio.get(url);
     PlacesAutocompleteResponse subscriptionResponse =
         PlacesAutocompleteResponse.fromJson(response.data);
-
-//    String res = await DefaultAssetBundle.of(context).loadString('images/location.json');
-//    PlacesAutocompleteResponse subscriptionResponse =
-//        PlacesAutocompleteResponse.fromJson(json.decode(res));
-//    print("respinseee" + response.statusCode.toString() + " "+url);
 
     if (text.length == 0) {
       alPredictions.clear();

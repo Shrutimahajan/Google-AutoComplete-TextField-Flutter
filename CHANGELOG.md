@@ -10,3 +10,6 @@
 
 * Support multiple countries
 
+## 2.0.2
+
+* Get LatLng from Place detail
