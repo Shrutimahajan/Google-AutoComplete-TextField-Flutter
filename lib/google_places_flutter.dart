@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
+import 'package:google_places_flutter/model/place_type.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:rxdart/subjects.dart';
@@ -21,19 +22,23 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   String googleAPIKey;
   int debounceTime = 600;
   List<String> countries = List();
+  PlaceType placeType;
+  String language;
   TextEditingController textEditingController = TextEditingController();
 
-  GooglePlaceAutoCompleteTextField(
-      {@required this.textEditingController,
-      @required this.googleAPIKey,
-      this.debounceTime: 600,
-      this.inputDecoration: const InputDecoration(),
-      this.itmClick,
-      this.isLatLngRequired=true,
-      this.textStyle: const TextStyle(),
-      this.countries,
-      this.getPlaceDetailWithLatLng,
-      });
+  GooglePlaceAutoCompleteTextField({
+    @required this.textEditingController,
+    @required this.googleAPIKey,
+    this.debounceTime: 600,
+    this.inputDecoration: const InputDecoration(),
+    this.itmClick,
+    this.isLatLngRequired = true,
+    this.textStyle: const TextStyle(),
+    this.countries,
+    this.getPlaceDetailWithLatLng,
+    this.placeType,
+    this.language = 'en',
+  });
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -66,7 +71,11 @@ class _GooglePlaceAutoCompleteTextFieldState
   getLocation(String text) async {
     Dio dio = new Dio();
     String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}&language=${widget.language}";
+
+    if (widget.placeType != null) {
+      url += "&types=${widget.placeType.apiString}";
+    }
 
     if (widget.countries != null) {
       // in
@@ -81,8 +90,6 @@ class _GooglePlaceAutoCompleteTextFieldState
         }
       }
     }
-
-
 
     Response response = await dio.get(url);
     PlacesAutocompleteResponse subscriptionResponse =
