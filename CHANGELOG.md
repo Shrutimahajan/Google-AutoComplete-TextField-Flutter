@@ -13,3 +13,7 @@
 ## 2.0.2
 
 * Get LatLng from Place detail
+
+## 2.0.3
+
+* Remove place-type field and improve the accuracy of search result
