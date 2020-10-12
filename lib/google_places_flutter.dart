@@ -23,6 +23,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   int debounceTime = 600;
   List<String> countries = List();
   PlaceType placeType;
+  String language;
   TextEditingController textEditingController = TextEditingController();
 
   GooglePlaceAutoCompleteTextField({
@@ -36,6 +37,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
     this.countries,
     this.getPlaceDetailWithLatLng,
     this.placeType,
+    this.language = 'en',
   });
 
   @override
@@ -69,7 +71,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   getLocation(String text) async {
     Dio dio = new Dio();
     String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}&language=${widget.language}";
 
     if (widget.placeType != null) {
       url += "&types=${widget.placeType.apiString}";
