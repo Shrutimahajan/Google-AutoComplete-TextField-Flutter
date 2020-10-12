@@ -66,7 +66,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   getLocation(String text) async {
     Dio dio = new Dio();
     String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&types=establishment&radius=500&key=${widget.googleAPIKey}";
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
 
     if (widget.countries != null) {
       // in
