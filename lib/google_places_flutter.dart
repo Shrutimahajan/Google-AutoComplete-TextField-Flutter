@@ -16,7 +16,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   ItemClick itmClick;
   GetPlaceDetailswWithLatLng getPlaceDetailWithLatLng;
   bool isLatLngRequired = true;
-
+  Color rowColor;
   TextStyle textStyle;
   String googleAPIKey;
   int debounceTime = 600;
@@ -32,6 +32,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.isLatLngRequired=true,
       this.textStyle: const TextStyle(),
       this.countries,
+        this.rowColor,
       this.getPlaceDetailWithLatLng,
       });
 
@@ -155,6 +156,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                             },
                             child: Container(
                                 padding: EdgeInsets.all(10),
+                                color: widget.rowColor ?? Colors.white,
                                 child: Text(alPredictions[index].description)),
                           );
                         },
