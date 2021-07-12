@@ -154,7 +154,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                             child: Container(
                                 padding: EdgeInsets.all(10),
                                 color: widget.rowColor ?? Colors.white,
-                                child: Text(alPredictions[index]?.description ?? "")),
+                                child: Text(alPredictions[index].description ?? "")),
                           );
                         },
                       )),
