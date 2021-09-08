@@ -17,3 +17,7 @@
 ## 2.0.3
 
 * Remove place-type field and improve the accuracy of search result
+
+## 2.0.4
+
+* Support Null Safety
