@@ -11,8 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  dio: ^3.0.10
-  rxdart: ^0.24.1
+  dio: ^4.0.0
+  rxdart: ^0.27.2
 
 
 
