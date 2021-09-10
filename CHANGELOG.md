@@ -21,3 +21,7 @@
 ## 2.0.4
 
 * Support Null Safety
+
+## 2.0.5
+
+* Support Null Safety and code improvement
