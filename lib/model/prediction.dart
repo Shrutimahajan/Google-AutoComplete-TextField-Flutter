@@ -1,14 +1,14 @@
 class PlacesAutocompleteResponse {
-  List<Prediction> predictions;
-  String status;
+  List<Prediction>? predictions;
+  String? status;
 
   PlacesAutocompleteResponse({this.predictions, this.status});
 
   PlacesAutocompleteResponse.fromJson(Map<String, dynamic> json) {
     if (json['predictions'] != null) {
-      predictions = new List<Prediction>();
+      predictions = [];
       json['predictions'].forEach((v) {
-        predictions.add(new Prediction.fromJson(v));
+        predictions!.add(new Prediction.fromJson(v));
       });
     }
     status = json['status'];
@@ -17,7 +17,7 @@ class PlacesAutocompleteResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.predictions != null) {
-      data['predictions'] = this.predictions.map((v) => v.toJson()).toList();
+      data['predictions'] = this.predictions!.map((v) => v.toJson()).toList();
     }
     data['status'] = this.status;
     return data;
@@ -25,16 +25,16 @@ class PlacesAutocompleteResponse {
 }
 
 class Prediction {
-  String description;
-  String id;
-  List<MatchedSubstrings> matchedSubstrings;
-  String placeId;
-  String reference;
-  StructuredFormatting structuredFormatting;
-  List<Terms> terms;
-  List<String> types;
-  String lat;
-  String lng;
+  String? description;
+  String? id;
+  List<MatchedSubstrings>? matchedSubstrings;
+  String? placeId;
+  String? reference;
+  StructuredFormatting? structuredFormatting;
+  List<Terms>? terms;
+  List<String>? types;
+  String? lat;
+  String? lng;
 
   Prediction(
       {this.description,
@@ -52,9 +52,9 @@ class Prediction {
     description = json['description'];
     id = json['id'];
     if (json['matched_substrings'] != null) {
-      matchedSubstrings = new List<MatchedSubstrings>();
+      matchedSubstrings = [];
       json['matched_substrings'].forEach((v) {
-        matchedSubstrings.add(new MatchedSubstrings.fromJson(v));
+        matchedSubstrings!.add(new MatchedSubstrings.fromJson(v));
       });
     }
     placeId = json['place_id'];
@@ -63,9 +63,9 @@ class Prediction {
         ? new StructuredFormatting.fromJson(json['structured_formatting'])
         : null;
     if (json['terms'] != null) {
-      terms = new List<Terms>();
+      terms =[];
       json['terms'].forEach((v) {
-        terms.add(new Terms.fromJson(v));
+        terms!.add(new Terms.fromJson(v));
       });
     }
     types = json['types'].cast<String>();
@@ -79,15 +79,15 @@ class Prediction {
     data['id'] = this.id;
     if (this.matchedSubstrings != null) {
       data['matched_substrings'] =
-          this.matchedSubstrings.map((v) => v.toJson()).toList();
+          this.matchedSubstrings!.map((v) => v.toJson()).toList();
     }
     data['place_id'] = this.placeId;
     data['reference'] = this.reference;
     if (this.structuredFormatting != null) {
-      data['structured_formatting'] = this.structuredFormatting.toJson();
+      data['structured_formatting'] = this.structuredFormatting!.toJson();
     }
     if (this.terms != null) {
-      data['terms'] = this.terms.map((v) => v.toJson()).toList();
+      data['terms'] = this.terms!.map((v) => v.toJson()).toList();
     }
     data['types'] = this.types;
     data['lat'] = this.lat;
@@ -98,8 +98,8 @@ class Prediction {
 }
 
 class MatchedSubstrings {
-  int length;
-  int offset;
+  int? length;
+  int? offset;
 
   MatchedSubstrings({this.length, this.offset});
 
@@ -117,9 +117,9 @@ class MatchedSubstrings {
 }
 
 class StructuredFormatting {
-  String mainText;
+  String? mainText;
 
-  String secondaryText;
+  String? secondaryText;
 
   StructuredFormatting({this.mainText, this.secondaryText});
 
@@ -138,8 +138,8 @@ class StructuredFormatting {
 }
 
 class Terms {
-  int offset;
-  String value;
+  int? offset;
+  String? value;
 
   Terms({this.offset, this.value});
 
