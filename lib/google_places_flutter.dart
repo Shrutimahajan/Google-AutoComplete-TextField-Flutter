@@ -22,10 +22,12 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   int debounceTime = 600;
   List<String>? countries = [];
   TextEditingController textEditingController = TextEditingController();
+  final validator;
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
       required this.googleAPIKey,
+      this.validator,
       this.debounceTime: 600,
       this.inputDecoration: const InputDecoration(),
       this.itmClick,
@@ -57,6 +59,7 @@ class _GooglePlaceAutoCompleteTextFieldState
       child: TextFormField(
         decoration: widget.inputDecoration,
         style: widget.textStyle,
+        validator: widget.validator,
         controller: widget.textEditingController,
         onChanged: (string) => (subject.add(string)),
       ),
