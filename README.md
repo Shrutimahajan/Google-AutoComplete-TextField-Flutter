@@ -16,6 +16,7 @@ dependencies:
 ```
     GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
+        validator: (val){} // optional by default. Use it just as you would use the validator of any regular TextFormField
         googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration()
         debounceTime: 800 // default 600 ms,
