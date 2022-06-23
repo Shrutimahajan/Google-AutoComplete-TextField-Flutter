@@ -25,3 +25,9 @@
 ## 2.0.5
 
 * Support Null Safety and code improvement
+
+## 2.1.0
+
+* Added language property
+* Added onEditingComplete method
+* No need to import package models anymore
