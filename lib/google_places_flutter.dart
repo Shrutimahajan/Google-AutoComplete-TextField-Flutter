@@ -1,15 +1,14 @@
 library google_places_flutter;
 
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-
-import 'package:rxdart/subjects.dart';
-import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/subjects.dart';
+
+export 'package:google_places_flutter/model/place_details.dart';
+export 'package:google_places_flutter/model/prediction.dart';
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
@@ -21,19 +20,22 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   String googleAPIKey;
   int debounceTime = 600;
   List<String>? countries = [];
+  String? language;
+  VoidCallback? onEditingComplete;
   TextEditingController textEditingController = TextEditingController();
 
-  GooglePlaceAutoCompleteTextField(
-      {required this.textEditingController,
-      required this.googleAPIKey,
-      this.debounceTime: 600,
-      this.inputDecoration: const InputDecoration(),
-      this.itmClick,
-      this.isLatLngRequired=true,
-      this.textStyle: const TextStyle(),
-      this.countries,
-      this.getPlaceDetailWithLatLng,
-      });
+  GooglePlaceAutoCompleteTextField({required this.textEditingController,
+    required this.googleAPIKey,
+    this.debounceTime: 600,
+    this.inputDecoration: const InputDecoration(),
+    this.itmClick,
+    this.isLatLngRequired = true,
+    this.textStyle: const TextStyle(),
+    this.countries,
+    this.language,
+    this.onEditingComplete,
+    this.getPlaceDetailWithLatLng,
+  });
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -59,6 +61,10 @@ class _GooglePlaceAutoCompleteTextFieldState
         style: widget.textStyle,
         controller: widget.textEditingController,
         onChanged: (string) => (subject.add(string)),
+        onEditingComplete: () {
+          removeOverlay();
+          widget.onEditingComplete;
+        },
       ),
     );
   }
@@ -66,7 +72,12 @@ class _GooglePlaceAutoCompleteTextFieldState
   getLocation(String text) async {
     Dio dio = new Dio();
     String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget
+        .googleAPIKey}";
+
+    if (widget.language != null) {
+      url = url + "&language=${widget.language}";
+    }
 
     if (widget.countries != null) {
       // in
@@ -83,10 +94,9 @@ class _GooglePlaceAutoCompleteTextFieldState
     }
 
 
-
     Response response = await dio.get(url);
     PlacesAutocompleteResponse subscriptionResponse =
-        PlacesAutocompleteResponse.fromJson(response.data);
+    PlacesAutocompleteResponse.fromJson(response.data);
 
     if (text.length == 0) {
       alPredictions.clear();
@@ -126,7 +136,8 @@ class _GooglePlaceAutoCompleteTextFieldState
       var size = renderBox.size;
       var offset = renderBox.localToGlobal(Offset.zero);
       return OverlayEntry(
-          builder: (context) => Positioned(
+          builder: (context) =>
+              Positioned(
                 left: offset.dx,
                 top: size.height + offset.dy,
                 width: size.width,
@@ -177,7 +188,8 @@ class _GooglePlaceAutoCompleteTextFieldState
     //String key = GlobalConfiguration().getString('google_maps_key');
 
     var url =
-        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction
+        .placeId}&key=${widget.googleAPIKey}";
     Response response = await Dio().get(
       url,
     );
@@ -196,7 +208,8 @@ class _GooglePlaceAutoCompleteTextFieldState
 }
 
 PlacesAutocompleteResponse parseResponse(Map responseBody) {
-  return PlacesAutocompleteResponse.fromJson(responseBody as Map<String, dynamic>);
+  return PlacesAutocompleteResponse.fromJson(
+      responseBody as Map<String, dynamic>);
 }
 
 PlaceDetails parsePlaceDetailMap(Map responseBody) {
