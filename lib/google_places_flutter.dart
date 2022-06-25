@@ -22,11 +22,11 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   List<String>? countries = [];
   String? language;
   VoidCallback? onEditingComplete;
-  TextEditingController textEditingController = TextEditingController();
-  FocusNode focusNode = FocusNode();
+  TextEditingController? textEditingController;
+  FocusNode? focusNode;
 
   GooglePlaceAutoCompleteTextField({
-    required this.textEditingController,
+    this.textEditingController,
     this.focusNode,
     required this.googleAPIKey,
     this.debounceTime: 600,
@@ -160,12 +160,12 @@ class _GooglePlaceAutoCompleteTextFieldState
                             onTap: () {
                               if (index < alPredictions.length) {
                                 widget.itmClick!(alPredictions[index]);
+                                removeOverlay();
                                 if (!widget.isLatLngRequired) return;
 
                                 getPlaceDetailsFromPlaceId(
                                     alPredictions[index]);
 
-                                removeOverlay();
                               }
                             },
                             child: Container(
