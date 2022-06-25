@@ -23,8 +23,11 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   String? language;
   VoidCallback? onEditingComplete;
   TextEditingController textEditingController = TextEditingController();
+  FocusNode focusNode = FocusNode();
 
-  GooglePlaceAutoCompleteTextField({required this.textEditingController,
+  GooglePlaceAutoCompleteTextField({
+    required this.textEditingController,
+    this.focusNode,
     required this.googleAPIKey,
     this.debounceTime: 600,
     this.inputDecoration: const InputDecoration(),
@@ -60,6 +63,7 @@ class _GooglePlaceAutoCompleteTextFieldState
         decoration: widget.inputDecoration,
         style: widget.textStyle,
         controller: widget.textEditingController,
+        focusNode: widget.focusNode,
         onChanged: (string) => (subject.add(string)),
         onEditingComplete: () {
           removeOverlay();
