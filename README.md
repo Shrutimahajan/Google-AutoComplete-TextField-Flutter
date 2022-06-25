@@ -16,6 +16,7 @@ dependencies:
 ```
     GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
+        focusNode: focusNode,
         googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration(),
         debounceTime: 800, // default 600 ms,
