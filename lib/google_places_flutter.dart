@@ -67,7 +67,7 @@ class _GooglePlaceAutoCompleteTextFieldState
         onChanged: (string) => (subject.add(string)),
         onEditingComplete: () {
           removeOverlay();
-          widget.onEditingComplete;
+          if(widget.onEditingComplete != null) widget.onEditingComplete!();
         },
       ),
     );
