@@ -68,7 +68,14 @@ class _GooglePlaceAutoCompleteTextFieldState
         controller: widget.textEditingController,
         focusNode: widget.focusNode,
         onChanged: (string) => (subject.add(string)),
-        validator: (string) => validator(selectedPrediction, string),
+        validator: (string) {
+          if(widget.validator != null) {
+            return widget.validator!(selectedPrediction, string);
+          }
+          else {
+            return null;
+          }
+        },
         onEditingComplete: () {
           removeOverlay();
           if (widget.onEditingComplete != null) widget.onEditingComplete!();
@@ -164,7 +171,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                             onTap: () {
                               if (index < alPredictions.length) {
                                 selectedPrediction = alPredictions[index];
-                                widget.itmClick!(selectedPrediction);
+                                widget.itmClick!(selectedPrediction!);
                                 removeOverlay();
                                 if (!widget.isLatLngRequired) return;
 
