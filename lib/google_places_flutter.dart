@@ -13,6 +13,7 @@ export 'package:google_places_flutter/model/prediction.dart';
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
   ItemClick? itmClick;
+  Validator? validator;
   GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
   bool isLatLngRequired = true;
 
@@ -32,6 +33,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
     this.debounceTime: 600,
     this.inputDecoration: const InputDecoration(),
     this.itmClick,
+    this.validator,
     this.isLatLngRequired = true,
     this.textStyle: const TextStyle(),
     this.countries,
@@ -50,6 +52,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   final subject = new PublishSubject<String>();
   OverlayEntry? _overlayEntry;
   List<Prediction> alPredictions = [];
+  Prediction? selectedPrediction;
 
   TextEditingController controller = TextEditingController();
   final LayerLink _layerLink = LayerLink();
@@ -65,9 +68,10 @@ class _GooglePlaceAutoCompleteTextFieldState
         controller: widget.textEditingController,
         focusNode: widget.focusNode,
         onChanged: (string) => (subject.add(string)),
+        validator: (string) => validator(selectedPrediction, string),
         onEditingComplete: () {
           removeOverlay();
-          if(widget.onEditingComplete != null) widget.onEditingComplete!();
+          if (widget.onEditingComplete != null) widget.onEditingComplete!();
         },
       ),
     );
@@ -159,13 +163,13 @@ class _GooglePlaceAutoCompleteTextFieldState
                           return InkWell(
                             onTap: () {
                               if (index < alPredictions.length) {
-                                widget.itmClick!(alPredictions[index]);
+                                selectedPrediction = alPredictions[index];
+                                widget.itmClick!(selectedPrediction);
                                 removeOverlay();
                                 if (!widget.isLatLngRequired) return;
 
                                 getPlaceDetailsFromPlaceId(
                                     alPredictions[index]);
-
                               }
                             },
                             child: Container(
@@ -223,3 +227,4 @@ PlaceDetails parsePlaceDetailMap(Map responseBody) {
 typedef ItemClick = void Function(Prediction postalCodeResponse);
 typedef GetPlaceDetailswWithLatLng = void Function(
     Prediction postalCodeResponse);
+typedef Validator = String? Function(Prediction? postalCodeResponse, String? address);
