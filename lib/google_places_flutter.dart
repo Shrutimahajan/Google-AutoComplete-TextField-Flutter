@@ -1,20 +1,15 @@
 library google_places_flutter;
 
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-
-import 'package:rxdart/subjects.dart';
-import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
   ItemClick? itmClick;
-  GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
+  GetPlaceDetailsWithLatLng? getPlaceDetailWithLatLng;
   bool isLatLngRequired = true;
 
   TextStyle textStyle;
@@ -26,11 +21,11 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
       required this.googleAPIKey,
-      this.debounceTime: 600,
-      this.inputDecoration: const InputDecoration(),
+      this.debounceTime= 600,
+      this.inputDecoration = const InputDecoration(),
       this.itmClick,
       this.isLatLngRequired=true,
-      this.textStyle: const TextStyle(),
+      this.textStyle = const TextStyle(),
       this.countries,
       this.getPlaceDetailWithLatLng,
       });
@@ -104,12 +99,13 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     this._overlayEntry = null;
     this._overlayEntry = this._createOverlayEntry();
-    Overlay.of(context)!.insert(this._overlayEntry!);
+    Overlay.of(context).insert(this._overlayEntry!);
     //   this._overlayEntry.markNeedsBuild();
   }
 
   @override
   void initState() {
+    super.initState();
     subject.stream
         .distinct()
         .debounceTime(Duration(milliseconds: widget.debounceTime))
@@ -121,7 +117,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   OverlayEntry? _createOverlayEntry() {
-    if (context != null && context.findRenderObject() != null) {
+    if (context.findRenderObject() != null) {
       RenderBox renderBox = context.findRenderObject() as RenderBox;
       var size = renderBox.size;
       var offset = renderBox.localToGlobal(Offset.zero);
@@ -167,10 +163,8 @@ class _GooglePlaceAutoCompleteTextFieldState
   removeOverlay() {
     alPredictions.clear();
     this._overlayEntry = this._createOverlayEntry();
-    if (context != null) {
-      Overlay.of(context)!.insert(this._overlayEntry!);
-      this._overlayEntry!.markNeedsBuild();
-    }
+    Overlay.of(context).insert(this._overlayEntry!);
+    this._overlayEntry!.markNeedsBuild();
   }
 
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
@@ -204,5 +198,5 @@ PlaceDetails parsePlaceDetailMap(Map responseBody) {
 }
 
 typedef ItemClick = void Function(Prediction postalCodeResponse);
-typedef GetPlaceDetailswWithLatLng = void Function(
+typedef GetPlaceDetailsWithLatLng = void Function(
     Prediction postalCodeResponse);
