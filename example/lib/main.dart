@@ -13,13 +13,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Custom Autocomplete sample'),
+      home: const MyHomePage(title: 'Custom Autocomplete sample'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             placesAutoCompleteTextField(),
           ],
         ),
@@ -68,22 +68,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   placesAutoCompleteTextField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: GooglePlaceAutoCompleteTextField(
           textEditingController: controller,
           googleAPIKey: "YOUR_GOOGLE_API_KEY",
-          inputDecoration: InputDecoration(hintText: "Search your location"),
+          inputDecoration: const InputDecoration(hintText: "Search your location"),
           debounceTime: 800,
-          countries: ["in", "fr"],
+          countries: const ["in", "fr"],
           isLatLngRequired: true,
           getPlaceDetailWithLatLng: (Prediction prediction) {
-            print("placeDetails" + prediction.lng.toString());
+            debugPrint("placeDetails${prediction.lng}");
           },
           itmClick: (Prediction prediction) {
-            controller.text = prediction.description;
+            controller.text = prediction.description ?? '';
 
-            controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: prediction.description.length));
+            controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description?.length ?? 0));
           }
           // default 600 ms ,
           ),
