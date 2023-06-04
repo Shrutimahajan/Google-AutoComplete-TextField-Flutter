@@ -1,13 +1,9 @@
 library google_places_flutter;
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-import 'package:rxdart/subjects.dart';
 import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,19 +16,25 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   TextStyle textStyle;
   String googleAPIKey;
   int debounceTime = 600;
+  int? radius ;
+  double? nearbyAreaLat;
+  double? nearbyAreaLng;
   List<String>? countries = [];
   TextEditingController textEditingController = TextEditingController();
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
-      required this.googleAPIKey,
-      this.debounceTime: 600,
-      this.inputDecoration: const InputDecoration(),
-      this.itmClick,
-      this.isLatLngRequired=true,
-      this.textStyle: const TextStyle(),
-      this.countries,
-      this.getPlaceDetailWithLatLng,
+        required this.googleAPIKey,
+        this.debounceTime: 600,
+        this.inputDecoration: const InputDecoration(),
+        this.itmClick,
+        this.isLatLngRequired=true,
+        this.textStyle: const TextStyle(),
+        this.countries,
+        this.getPlaceDetailWithLatLng,
+        this.radius,
+        this.nearbyAreaLat,
+        this.nearbyAreaLng,
       });
 
   @override
@@ -75,18 +77,26 @@ class _GooglePlaceAutoCompleteTextFieldState
         String country = widget.countries![i];
 
         if (i == 0) {
-          url = url + "&components=country:$country";
+          url = url + "&components=country:$country&region=$country";
         } else {
-          url = url + "|" + "country:" + country;
+          url = url + "|" + "country:" + country + "&regtion=$country";
         }
       }
+    }
+    if (widget.nearbyAreaLat != null && widget.nearbyAreaLng != null) {
+
+      url = url + "&location=${widget.nearbyAreaLat}%2C${widget.nearbyAreaLng}";
+    }
+    if (widget.radius != null) {
+
+      url = url + "&radius=${widget.radius}";
     }
 
 
 
     Response response = await dio.get(url);
     PlacesAutocompleteResponse subscriptionResponse =
-        PlacesAutocompleteResponse.fromJson(response.data);
+    PlacesAutocompleteResponse.fromJson(response.data);
 
     if (text.length == 0) {
       alPredictions.clear();
@@ -127,40 +137,40 @@ class _GooglePlaceAutoCompleteTextFieldState
       var offset = renderBox.localToGlobal(Offset.zero);
       return OverlayEntry(
           builder: (context) => Positioned(
-                left: offset.dx,
-                top: size.height + offset.dy,
-                width: size.width,
-                child: CompositedTransformFollower(
-                  showWhenUnlinked: false,
-                  link: this._layerLink,
-                  offset: Offset(0.0, size.height + 5.0),
-                  child: Material(
-                      elevation: 1.0,
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemCount: alPredictions.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () {
-                              if (index < alPredictions.length) {
-                                widget.itmClick!(alPredictions[index]);
-                                if (!widget.isLatLngRequired) return;
+            left: offset.dx,
+            top: size.height + offset.dy,
+            width: size.width,
+            child: CompositedTransformFollower(
+              showWhenUnlinked: false,
+              link: this._layerLink,
+              offset: Offset(0.0, size.height + 5.0),
+              child: Material(
+                  elevation: 1.0,
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: alPredictions.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          if (index < alPredictions.length) {
+                            widget.itmClick!(alPredictions[index]);
+                            if (!widget.isLatLngRequired) return;
 
-                                getPlaceDetailsFromPlaceId(
-                                    alPredictions[index]);
+                            getPlaceDetailsFromPlaceId(
+                                alPredictions[index]);
 
-                                removeOverlay();
-                              }
-                            },
-                            child: Container(
-                                padding: EdgeInsets.all(10),
-                                child: Text(alPredictions[index].description!)),
-                          );
+                            removeOverlay();
+                          }
                         },
-                      )),
-                ),
-              ));
+                        child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(alPredictions[index].description!)),
+                      );
+                    },
+                  )),
+            ),
+          ));
     }
   }
 
@@ -206,3 +216,4 @@ PlaceDetails parsePlaceDetailMap(Map responseBody) {
 typedef ItemClick = void Function(Prediction postalCodeResponse);
 typedef GetPlaceDetailswWithLatLng = void Function(
     Prediction postalCodeResponse);
+
