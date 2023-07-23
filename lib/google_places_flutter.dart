@@ -4,6 +4,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
@@ -65,8 +68,16 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   getLocation(String text) async {
     Dio dio = new Dio();
-    String url =
+
+    /// Construct the URL for making a Google Places API autocomplete request
+	String apiURL =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+	String proxyURL = "https://cors-anywhere.herokuapp.com/";
+	String url = kIsWeb ? proxyURL + apiURL : apiURL;
+	/// Add the custom header to the options
+	final options = kIsWeb ? Options(
+      headers: { "x-requested-with": "XMLHttpRequest" }
+    ) : null;
 
     if (widget.countries != null) {
       // in
@@ -82,9 +93,8 @@ class _GooglePlaceAutoCompleteTextFieldState
       }
     }
 
-
-
-    Response response = await dio.get(url);
+	/// Send an HTTP GET request to the specified URL
+    Response response = await dio.get(url, options: options);
     PlacesAutocompleteResponse subscriptionResponse =
         PlacesAutocompleteResponse.fromJson(response.data);
 
@@ -176,11 +186,17 @@ class _GooglePlaceAutoCompleteTextFieldState
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    var url =
+	/// Construct the URL for making a Google Places API autocomplete request
+	String apiURL =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
-    Response response = await Dio().get(
-      url,
-    );
+	String proxyURL = "https://cors-anywhere.herokuapp.com/";
+	String url = kIsWeb ? proxyURL + apiURL : apiURL;
+	/// Add the custom header to the options
+	final options = kIsWeb ? Options(
+      headers: { "x-requested-with": "XMLHttpRequest" }
+    ) : null;
+	/// Send an HTTP GET request to the specified URL
+    Response response = await Dio().get(url, options: options);
 
     PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
