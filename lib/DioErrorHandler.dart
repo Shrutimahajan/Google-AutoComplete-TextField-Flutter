@@ -10,7 +10,6 @@ class DioErrorHandler {
 
 
   ErrorResponse handleDioError(DioError dioError) {
-    print("resType ${dioError.type}");
     switch (dioError.type) {
       case DioErrorType.cancel:
 
