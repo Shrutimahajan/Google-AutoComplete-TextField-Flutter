@@ -25,3 +25,12 @@
 ## 2.0.5
 
 * Support Null Safety and code improvement
+
+## 2.0.6
+
+* Support custom list item builder, error handled and minor fixes
+
+## 2.0.7
+
+* Support focusNode, move crossBtn to TextFormField suffixIcon
+
