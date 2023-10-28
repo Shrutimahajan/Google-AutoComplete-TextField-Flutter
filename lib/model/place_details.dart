@@ -70,7 +70,7 @@ class Result {
     icon = json['icon'];
     name = json['name'];
     if (json['photos'] != null) {
-      photos =[];
+      photos = [];
       json['photos'].forEach((v) {
         photos!.add(new Photos.fromJson(v));
       });

@@ -12,7 +12,6 @@ dependencies:
 
 # Google AutoComplete TextField Widget code
 
-
 ```
     GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
@@ -29,12 +28,38 @@ dependencies:
          controller.text=prediction.description;
           controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description.length));
         }
+        // if we want to make custom list item builder
+        itemBuilder: (context, index, Prediction prediction) {
+          return Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Icon(Icons.location_on),
+                SizedBox(
+                  width: 7,
+                ),
+                Expanded(child: Text("${prediction.description??""}"))
+              ],
+            ),
+          );
+        }
+        // if you want to add seperator between list items
+        seperatedBuilder: Divider(),
+        // want to show close icon 
+        isCrossBtnShown: true,
+         
+         
+        
+        
     )
     
 ```
+
 # Customization Option
- You can customize a text field input decoration and debounce time 
+
+You can customize a text field input decoration and debounce time
 
 # Screenshorts
+
 <img src="sample.jpg" height="400">
 
