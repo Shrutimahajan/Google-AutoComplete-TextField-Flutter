@@ -62,7 +62,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   final LayerLink _layerLink = LayerLink();
   bool isSearched = false;
 
-  bool isCrossBtn = true;
+  bool isCrossBtn = false;
   late var _dio;
 
   CancelToken? _cancelToken = CancelToken();
