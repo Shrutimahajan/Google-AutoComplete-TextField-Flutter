@@ -1,17 +1,17 @@
 name: google_places_flutter
 description: Custom Google places autocomplete widget for Android and iOS both. Use https://pub.dev/packages/google_places_flutter
-version: 2.0.5
+version: 2.0.7
 author: Shruti Mahajan <shruti.sm87@gmail.com>
 homepage: https://github.com/Shrutimahajan/Google-AutoComplete-TextField-Flutter
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
-  dio: ^4.0.0
+  dio: ^5.4.0
   rxdart: ^0.27.2
 
 

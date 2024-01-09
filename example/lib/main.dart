@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.title ?? ""),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -70,23 +70,48 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: GooglePlaceAutoCompleteTextField(
-          textEditingController: controller,
-          googleAPIKey: "YOUR_GOOGLE_API_KEY",
-          inputDecoration: InputDecoration(hintText: "Search your location"),
-          debounceTime: 800,
-          countries: ["in", "fr"],
-          isLatLngRequired: true,
-          getPlaceDetailWithLatLng: (Prediction prediction) {
-            print("placeDetails" + prediction.lng.toString());
-          },
-          itmClick: (Prediction prediction) {
-            controller.text = prediction.description;
+        textEditingController: controller,
+        googleAPIKey:"YOUR_GOOGLE_API_KEY",
+        inputDecoration: InputDecoration(
+          hintText: "Search your location",
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+        ),
+        debounceTime: 400,
+        countries: ["in", "fr"],
+        isLatLngRequired: false,
+        getPlaceDetailWithLatLng: (Prediction prediction) {
+          print("placeDetails" + prediction.lat.toString());
+        },
 
-            controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: prediction.description.length));
-          }
-          // default 600 ms ,
-          ),
+        itemClick: (Prediction prediction) {
+          controller.text = prediction.description ?? "";
+          controller.selection = TextSelection.fromPosition(
+              TextPosition(offset: prediction.description?.length ?? 0));
+        },
+        seperatedBuilder: Divider(),
+        containerHorizontalPadding: 10,
+
+        // OPTIONAL// If you want to customize list view item builder
+        itemBuilder: (context, index, Prediction prediction) {
+          return Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Icon(Icons.location_on),
+                SizedBox(
+                  width: 7,
+                ),
+                Expanded(child: Text("${prediction.description??""}"))
+              ],
+            ),
+          );
+        },
+
+        isCrossBtnShown: true,
+
+        // default 600 ms ,
+      ),
     );
   }
 }
