@@ -29,3 +29,7 @@
 ## 2.0.6
 
 * Support custom list item builder, error handled and minor fixes
+
+## 2.0.7
+
+* Update dio dependency and minor improvements 
