@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey: "YOUR_GOOGLE_API_KEY",
+        googleAPIKey:"YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration(
           hintText: "Search your location",
           border: InputBorder.none,
@@ -90,6 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
               TextPosition(offset: prediction.description?.length ?? 0));
         },
         seperatedBuilder: Divider(),
+        containerHorizontalPadding: 10,
+
         // OPTIONAL// If you want to customize list view item builder
         itemBuilder: (context, index, Prediction prediction) {
           return Container(

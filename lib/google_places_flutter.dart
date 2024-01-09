@@ -29,6 +29,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   BoxDecoration? boxDecoration;
   bool isCrossBtnShown;
   bool showError;
+  double? containerHorizontalPadding;
+  double? containerVerticalPadding;
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
@@ -43,7 +45,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.itemBuilder,
       this.boxDecoration,
       this.isCrossBtnShown = true,
-      this.seperatedBuilder,this.showError=true});
+      this.seperatedBuilder,this.showError=true,this
+      .containerHorizontalPadding,this.containerVerticalPadding});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -65,12 +68,16 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   CancelToken? _cancelToken = CancelToken();
 
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return CompositedTransformTarget(
       link: _layerLink,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: widget.containerHorizontalPadding??0, vertical: widget.containerVerticalPadding??0),
         alignment: Alignment.centerLeft,
         decoration: widget.boxDecoration ??
             BoxDecoration(
