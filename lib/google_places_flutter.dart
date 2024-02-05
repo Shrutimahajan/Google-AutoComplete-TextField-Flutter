@@ -1,5 +1,6 @@
 library google_places_flutter;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
@@ -112,8 +113,16 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   getLocation(String text) async {
-    String url =
+    String apiURL =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+
+    String proxyURL = "https://cors-anywhere.herokuapp.com/";
+    String url = kIsWeb ? proxyURL + apiURL : apiURL;
+
+    /// Add the custom header to the options
+    final options = kIsWeb
+        ? Options(headers: {"x-requested-with": "XMLHttpRequest"})
+        : null;
 
     if (widget.countries != null) {
       // in
@@ -122,9 +131,9 @@ class _GooglePlaceAutoCompleteTextFieldState
         String country = widget.countries![i];
 
         if (i == 0) {
-          url = url + "&components=country:$country";
+          apiURL = apiURL + "&components=country:$country";
         } else {
-          url = url + "|" + "country:" + country;
+          apiURL = apiURL + "|" + "country:" + country;
         }
       }
     }
@@ -135,7 +144,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     }
 
     try {
-      Response response = await _dio.get(url);
+      Response response = await _dio.get(url, options: options);
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       Map map = response.data;
@@ -241,11 +250,18 @@ class _GooglePlaceAutoCompleteTextFieldState
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    var url =
+    var apiURL =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
-    Response response = await Dio().get(
-      url,
-    );
+
+    String proxyURL = "https://cors-anywhere.herokuapp.com/";
+    String url = kIsWeb ? proxyURL + apiURL : apiURL;
+
+    /// Add the custom header to the options
+    final options = kIsWeb
+        ? Options(headers: {"x-requested-with": "XMLHttpRequest"})
+        : null;
+
+    Response response = await Dio().get(url, options: options);
 
     PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
