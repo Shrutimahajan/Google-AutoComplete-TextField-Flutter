@@ -34,3 +34,7 @@
 
 * Support focusNode, move crossBtn to TextFormField suffixIcon
 
+## 2.0.8
+
+* temporarily  fix CORS error
+
