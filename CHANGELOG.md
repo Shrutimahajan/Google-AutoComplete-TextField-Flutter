@@ -33,3 +33,7 @@
 ## 2.0.7
 
 * Update dio dependency and minor improvements 
+
+## 2.0.8
+
+* LatLng details issue fixed and improvements
