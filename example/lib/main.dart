@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey:"YOUR_GOOGLE_API_KEY",
+        googleAPIKey: "YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration(
           hintText: "Search your location",
           border: InputBorder.none,
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         debounceTime: 400,
         countries: ["in", "fr"],
-        isLatLngRequired: false,
+        isLatLngRequired: true,
         getPlaceDetailWithLatLng: (Prediction prediction) {
           print("placeDetails" + prediction.lat.toString());
         },
@@ -102,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 7,
                 ),
-                Expanded(child: Text("${prediction.description??""}"))
+                Expanded(child: Text("${prediction.description ?? ""}"))
               ],
             ),
           );
