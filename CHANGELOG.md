@@ -36,4 +36,4 @@
 
 ## 2.0.8
 
-* LatLng details issue fixed and improvements
+* Bug fixes and improvements
