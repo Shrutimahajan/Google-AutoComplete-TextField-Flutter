@@ -1,16 +1,17 @@
 library google_places_flutter;
 
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_places_flutter/model/place_details.dart';
-import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:rxdart/subjects.dart';
 import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'DioErrorHandler.dart';
+import 'model/place_details.dart';
+import 'model/prediction.dart';
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   InputDecoration inputDecoration;
@@ -31,22 +32,33 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   bool showError;
   double? containerHorizontalPadding;
   double? containerVerticalPadding;
+  FocusNode? focusNode;
+  TextInputAction? textInputAction;
+  final VoidCallback? formSubmitCallback;
+
+
+
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
       required this.googleAPIKey,
-      this.debounceTime: 600,
-      this.inputDecoration: const InputDecoration(),
+      this.debounceTime = 600,
+      this.formSubmitCallback,
+      this.inputDecoration = const InputDecoration(),
       this.itemClick,
       this.isLatLngRequired = true,
-      this.textStyle: const TextStyle(),
+      this.textStyle = const TextStyle(),
       this.countries,
       this.getPlaceDetailWithLatLng,
       this.itemBuilder,
       this.boxDecoration,
       this.isCrossBtnShown = true,
-      this.seperatedBuilder,this.showError=true,this
-      .containerHorizontalPadding,this.containerVerticalPadding});
+      this.seperatedBuilder,
+      this.showError = true,
+      this.textInputAction = TextInputAction.done,
+      this.containerHorizontalPadding,
+      this.containerVerticalPadding,
+      this.focusNode});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -68,16 +80,14 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   CancelToken? _cancelToken = CancelToken();
 
-
-
-
   @override
   Widget build(BuildContext context) {
-
     return CompositedTransformTarget(
       link: _layerLink,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: widget.containerHorizontalPadding??0, vertical: widget.containerVerticalPadding??0),
+        padding: EdgeInsets.symmetric(
+            horizontal: widget.containerHorizontalPadding ?? 0,
+            vertical: widget.containerVerticalPadding ?? 0),
         alignment: Alignment.centerLeft,
         decoration: widget.boxDecoration ??
             BoxDecoration(
@@ -93,6 +103,11 @@ class _GooglePlaceAutoCompleteTextFieldState
                 decoration: widget.inputDecoration,
                 style: widget.textStyle,
                 controller: widget.textEditingController,
+                focusNode: widget.focusNode ?? FocusNode(),
+                textInputAction: widget.textInputAction,
+                onFieldSubmitted: (value) {
+                  widget.formSubmitCallback!();
+                },
                 onChanged: (string) {
                   subject.add(string);
                   if (widget.isCrossBtnShown) {
@@ -114,7 +129,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   getLocation(String text) async {
-    String url =
+    String apiURL =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
 
     if (widget.countries != null) {
@@ -124,9 +139,9 @@ class _GooglePlaceAutoCompleteTextFieldState
         String country = widget.countries![i];
 
         if (i == 0) {
-          url = url + "&components=country:$country";
+          apiURL = apiURL + "&components=country:$country";
         } else {
-          url = url + "|" + "country:" + country;
+          apiURL = apiURL + "|" + "country:" + country;
         }
       }
     }
@@ -136,8 +151,14 @@ class _GooglePlaceAutoCompleteTextFieldState
       _cancelToken = CancelToken();
     }
 
-
     try {
+      String proxyURL = "https://cors-anywhere.herokuapp.com/";
+      String url = kIsWeb ? proxyURL + apiURL : apiURL;
+
+      /// Add the custom header to the options
+      final options = kIsWeb
+          ? Options(headers: {"x-requested-with": "XMLHttpRequest"})
+          : null;
       Response response = await _dio.get(url);
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
@@ -157,10 +178,10 @@ class _GooglePlaceAutoCompleteTextFieldState
 
       isSearched = false;
       alPredictions.clear();
-      if (subscriptionResponse.predictions!.length > 0 && (widget.textEditingController.text.toString().trim()).isNotEmpty) {
+      if (subscriptionResponse.predictions!.length > 0 &&
+          (widget.textEditingController.text.toString().trim()).isNotEmpty) {
         alPredictions.addAll(subscriptionResponse.predictions!);
       }
-
 
       this._overlayEntry = null;
       this._overlayEntry = this._createOverlayEntry();
@@ -245,18 +266,24 @@ class _GooglePlaceAutoCompleteTextFieldState
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    var url =
-        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
-    Response response = await Dio().get(
-      url,
-    );
+    var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+    try {
+      Response response = await _dio.get(
+        url,
+      );
 
-    PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
-    prediction.lat = placeDetails.result!.geometry!.location!.lat.toString();
-    prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
+      PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
-    widget.getPlaceDetailWithLatLng!(prediction);
+      prediction.lat = placeDetails.result!.geometry!.location!.lat.toString();
+      prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
+
+      widget.getPlaceDetailWithLatLng!(prediction);
+    }
+    catch(e){
+      var errorHandler = ErrorHandler.internal().handleError(e);
+      _showSnackBar("${errorHandler.message}");
+    }
   }
 
   void clearData() {
@@ -282,7 +309,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   _showSnackBar(String errorData) {
-    if(widget.showError){
+    if (widget.showError) {
       final snackBar = SnackBar(
         content: Text("$errorData"),
       );
@@ -291,7 +318,6 @@ class _GooglePlaceAutoCompleteTextFieldState
       // and use it to show a SnackBar.
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
 }
 
