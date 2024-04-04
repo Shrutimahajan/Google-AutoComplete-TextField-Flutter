@@ -1,14 +1,12 @@
 library google_places_flutter;
 
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-
-import 'package:rxdart/subjects.dart';
-import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/subjects.dart';
 
 import 'DioErrorHandler.dart';
 
@@ -45,8 +43,10 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.itemBuilder,
       this.boxDecoration,
       this.isCrossBtnShown = true,
-      this.seperatedBuilder,this.showError=true,this
-      .containerHorizontalPadding,this.containerVerticalPadding});
+      this.seperatedBuilder,
+      this.showError = true,
+      this.containerHorizontalPadding,
+      this.containerVerticalPadding});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -68,16 +68,14 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   CancelToken? _cancelToken = CancelToken();
 
-
-
-
   @override
   Widget build(BuildContext context) {
-
     return CompositedTransformTarget(
       link: _layerLink,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: widget.containerHorizontalPadding??0, vertical: widget.containerVerticalPadding??0),
+        padding: EdgeInsets.symmetric(
+            horizontal: widget.containerHorizontalPadding ?? 0,
+            vertical: widget.containerVerticalPadding ?? 0),
         alignment: Alignment.centerLeft,
         decoration: widget.boxDecoration ??
             BoxDecoration(
@@ -136,7 +134,6 @@ class _GooglePlaceAutoCompleteTextFieldState
       _cancelToken = CancelToken();
     }
 
-
     try {
       Response response = await _dio.get(url);
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -157,10 +154,10 @@ class _GooglePlaceAutoCompleteTextFieldState
 
       isSearched = false;
       alPredictions.clear();
-      if (subscriptionResponse.predictions!.length > 0 && (widget.textEditingController.text.toString().trim()).isNotEmpty) {
+      if (subscriptionResponse.predictions!.length > 0 &&
+          (widget.textEditingController.text.toString().trim()).isNotEmpty) {
         alPredictions.addAll(subscriptionResponse.predictions!);
       }
-
 
       this._overlayEntry = null;
       this._overlayEntry = this._createOverlayEntry();
@@ -208,14 +205,13 @@ class _GooglePlaceAutoCompleteTextFieldState
                         widget.seperatedBuilder ?? SizedBox(),
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
-                        onTap: () {
+                        onTap: () async {
                           var selectedData = alPredictions[index];
                           if (index < alPredictions.length) {
-                            widget.itemClick!(selectedData);
-
                             if (widget.isLatLngRequired) {
-                              getPlaceDetailsFromPlaceId(selectedData);
+                              await getPlaceDetailsFromPlaceId(selectedData);
                             }
+                            widget.itemClick!(selectedData);
                             removeOverlay();
                           }
                         },
@@ -282,7 +278,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   _showSnackBar(String errorData) {
-    if(widget.showError){
+    if (widget.showError) {
       final snackBar = SnackBar(
         content: Text("$errorData"),
       );
@@ -291,7 +287,6 @@ class _GooglePlaceAutoCompleteTextFieldState
       // and use it to show a SnackBar.
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
   }
 }
 
