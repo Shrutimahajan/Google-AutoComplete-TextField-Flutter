@@ -2,51 +2,59 @@ library google_places_flutter;
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-import 'package:rxdart/subjects.dart';
 import 'package:dio/dio.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'DioErrorHandler.dart';
 
 class GooglePlaceAutoCompleteTextField extends StatefulWidget {
-  InputDecoration inputDecoration;
-  ItemClick? itemClick;
-  GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
-  bool isLatLngRequired = true;
+  final InputDecoration inputDecoration;
+  final ItemClick? itemClick;
+  final GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
+  final bool isLatLngRequired;
 
-  TextStyle textStyle;
-  String googleAPIKey;
-  int debounceTime = 600;
-  List<String>? countries = [];
-  TextEditingController textEditingController = TextEditingController();
-  ListItemBuilder? itemBuilder;
-  Widget? seperatedBuilder;
-  void clearData;
-  BoxDecoration? boxDecoration;
-  bool isCrossBtnShown;
-  bool showError;
-  double? containerHorizontalPadding;
-  double? containerVerticalPadding;
+  final TextStyle textStyle;
+  final String googleAPIKey;
+  final int debounceTime;
+  final List<String>? countries;
+  final TextEditingController textEditingController;
+  final ListItemBuilder? itemBuilder;
+  final Widget? seperatedBuilder;
+  final void clearData;
+  final BoxDecoration? boxDecoration;
+  final bool isCrossBtnShown;
+  final bool showError;
+  final double? containerHorizontalPadding;
+  final double? containerVerticalPadding;
+  final double? latitude;
+  final double? longitude;
+  /// This is expressed in **meters**
+  final int? radius;
 
-  GooglePlaceAutoCompleteTextField(
-      {required this.textEditingController,
+  GooglePlaceAutoCompleteTextField({
+      required this.textEditingController,
       required this.googleAPIKey,
-      this.debounceTime: 600,
-      this.inputDecoration: const InputDecoration(),
+      this.debounceTime = 600,
+      this.inputDecoration = const InputDecoration(),
       this.itemClick,
       this.isLatLngRequired = true,
-      this.textStyle: const TextStyle(),
-      this.countries,
+      this.textStyle = const TextStyle(),
+      this.countries = const [],
       this.getPlaceDetailWithLatLng,
       this.itemBuilder,
       this.boxDecoration,
       this.isCrossBtnShown = true,
-      this.seperatedBuilder,this.showError=true,this
-      .containerHorizontalPadding,this.containerVerticalPadding});
+      this.seperatedBuilder,this.showError=true,
+      this.containerHorizontalPadding,
+      this.containerVerticalPadding,
+      this.clearData,
+      this.latitude,
+      this.longitude,
+      this.radius
+  });
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -77,7 +85,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     return CompositedTransformTarget(
       link: _layerLink,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: widget.containerHorizontalPadding??0, vertical: widget.containerVerticalPadding??0),
+        padding: EdgeInsets.symmetric(horizontal: widget.containerHorizontalPadding ?? 0, vertical: widget.containerVerticalPadding ?? 0),
         alignment: Alignment.centerLeft,
         decoration: widget.boxDecoration ??
             BoxDecoration(
@@ -131,6 +139,10 @@ class _GooglePlaceAutoCompleteTextFieldState
       }
     }
 
+    if(widget.latitude != null && widget.longitude != null && widget.radius != null) {
+      url = url + "&location=${widget.latitude},${widget.longitude}&radius=${widget.radius}";
+    }
+
     if (_cancelToken?.isCancelled == false) {
       _cancelToken?.cancel();
       _cancelToken = CancelToken();
@@ -164,7 +176,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
       this._overlayEntry = null;
       this._overlayEntry = this._createOverlayEntry();
-      Overlay.of(context)!.insert(this._overlayEntry!);
+      Overlay.of(context).insert(this._overlayEntry!);
     } catch (e) {
       var errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
@@ -186,7 +198,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   OverlayEntry? _createOverlayEntry() {
-    if (context != null && context.findRenderObject() != null) {
+    if (context.findRenderObject() != null) {
       RenderBox renderBox = context.findRenderObject() as RenderBox;
       var size = renderBox.size;
       var offset = renderBox.localToGlobal(Offset.zero);
@@ -231,16 +243,15 @@ class _GooglePlaceAutoCompleteTextFieldState
                 ),
               ));
     }
+    return null;
   }
 
   removeOverlay() {
     alPredictions.clear();
     this._overlayEntry = this._createOverlayEntry();
-    if (context != null) {
-      Overlay.of(context).insert(this._overlayEntry!);
-      this._overlayEntry!.markNeedsBuild();
+    Overlay.of(context).insert(this._overlayEntry!);
+    this._overlayEntry!.markNeedsBuild();
     }
-  }
 
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
@@ -257,6 +268,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
 
     widget.getPlaceDetailWithLatLng!(prediction);
+    return null;
   }
 
   void clearData() {
