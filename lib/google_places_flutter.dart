@@ -29,6 +29,10 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   final bool showError;
   final double? containerHorizontalPadding;
   final double? containerVerticalPadding;
+  final double? latitude;
+  final double? longitude;
+  /// This is expressed in **meters**
+  final int? radius;
 
   GooglePlaceAutoCompleteTextField({
       required this.textEditingController,
@@ -46,7 +50,10 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.seperatedBuilder,this.showError=true,
       this.containerHorizontalPadding,
       this.containerVerticalPadding,
-      this.clearData
+      this.clearData,
+      this.latitude,
+      this.longitude,
+      this.radius
   });
 
   @override
@@ -130,6 +137,10 @@ class _GooglePlaceAutoCompleteTextFieldState
           url = url + "|" + "country:" + country;
         }
       }
+    }
+
+    if(widget.latitude != null && widget.longitude != null && widget.radius != null) {
+      url = url + "&location=${widget.latitude},${widget.longitude}&radius=${widget.radius}";
     }
 
     if (_cancelToken?.isCancelled == false) {
