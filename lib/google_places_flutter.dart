@@ -182,7 +182,9 @@ class _GooglePlaceAutoCompleteTextFieldState
   }
 
   textChanged(String text) async {
-    getLocation(text);
+    if (text != ''){
+      getLocation(text);
+    }
   }
 
   OverlayEntry? _createOverlayEntry() {
