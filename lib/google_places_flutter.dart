@@ -1,10 +1,10 @@
 library google_places_flutter;
 
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_places_flutter/model/place_details.dart';
+import 'package:google_places_flutter/model/place_type.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:rxdart/subjects.dart';
@@ -33,6 +33,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   double? containerHorizontalPadding;
   double? containerVerticalPadding;
   FocusNode? focusNode;
+  PlaceType? placeType;
+  String? language;
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
@@ -51,7 +53,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.showError = true,
       this.containerHorizontalPadding,
       this.containerVerticalPadding,
-      this.focusNode});
+      this.focusNode,
+      this.placeType,this.language='en'});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -119,7 +122,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   getLocation(String text) async {
     String apiURL =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}&language=${widget.language}";
 
     if (widget.countries != null) {
       // in
@@ -134,12 +137,16 @@ class _GooglePlaceAutoCompleteTextFieldState
         }
       }
     }
+    if (widget.placeType != null) {
+      apiURL += "&types=${widget.placeType?.apiString}";
+    }
 
     if (_cancelToken?.isCancelled == false) {
       _cancelToken?.cancel();
       _cancelToken = CancelToken();
     }
 
+    print("urlll $apiURL");
     try {
       String proxyURL = "https://cors-anywhere.herokuapp.com/";
       String url = kIsWeb ? proxyURL + apiURL : apiURL;
@@ -255,12 +262,12 @@ class _GooglePlaceAutoCompleteTextFieldState
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+    var url =
+        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     try {
       Response response = await _dio.get(
         url,
       );
-
 
       PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
@@ -268,8 +275,7 @@ class _GooglePlaceAutoCompleteTextFieldState
       prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
 
       widget.getPlaceDetailWithLatLng!(prediction);
-    }
-    catch(e){
+    } catch (e) {
       var errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }

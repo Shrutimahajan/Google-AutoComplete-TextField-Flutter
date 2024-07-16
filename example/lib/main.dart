@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:google_places_flutter/model/place_type.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 void main() => runApp(MyApp());
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: GooglePlaceAutoCompleteTextField(
         textEditingController: controller,
-        googleAPIKey: "YOUR_GOOGLE_API_KEY",
+        googleAPIKey:"YOUR_GOOGLE_API_KEY",
         inputDecoration: InputDecoration(
           hintText: "Search your location",
           border: InputBorder.none,
@@ -91,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         seperatedBuilder: Divider(),
         containerHorizontalPadding: 10,
+
 
         // OPTIONAL// If you want to customize list view item builder
         itemBuilder: (context, index, Prediction prediction) {
