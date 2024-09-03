@@ -18,7 +18,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   ItemClick? itemClick;
   GetPlaceDetailswWithLatLng? getPlaceDetailWithLatLng;
   bool isLatLngRequired = true;
-
+  final String? Function(String?, BuildContext)? validator;
   TextStyle textStyle;
   String googleAPIKey;
   int debounceTime = 600;
@@ -55,7 +55,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.containerVerticalPadding,
       this.focusNode,
       this.placeType,
-      this.language = 'en'});
+      this.language = 'en', this.validator});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -73,7 +73,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   bool isSearched = false;
 
   bool isCrossBtn = true;
-  late Dio _dio;
+  late var _dio;
 
   CancelToken? _cancelToken = CancelToken();
 
@@ -99,6 +99,9 @@ class _GooglePlaceAutoCompleteTextFieldState
                 decoration: widget.inputDecoration,
                 style: widget.textStyle,
                 controller: widget.textEditingController,
+                validator: (inputString) {
+                  return widget.validator?.call(inputString, context);
+                },
                 focusNode: widget.focusNode ?? FocusNode(),
                 onChanged: (string) {
                   subject.add(string);
@@ -184,7 +187,7 @@ class _GooglePlaceAutoCompleteTextFieldState
       this._overlayEntry = this._createOverlayEntry();
       Overlay.of(context)!.insert(this._overlayEntry!);
     } catch (e) {
-      final errorHandler = ErrorHandler.internal().handleError(e);
+      var errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }
   }
@@ -206,8 +209,8 @@ class _GooglePlaceAutoCompleteTextFieldState
   OverlayEntry? _createOverlayEntry() {
     if (context != null && context.findRenderObject() != null) {
       RenderBox renderBox = context.findRenderObject() as RenderBox;
-      final size = renderBox.size;
-      final offset = renderBox.localToGlobal(Offset.zero);
+      var size = renderBox.size;
+      var offset = renderBox.localToGlobal(Offset.zero);
       return OverlayEntry(
           builder: (context) => Positioned(
                 left: offset.dx,
@@ -228,7 +231,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
                             onTap: () {
-                              final selectedData = alPredictions[index];
+                              var selectedData = alPredictions[index];
                               if (index < alPredictions.length) {
                                 widget.itemClick!(selectedData);
 
@@ -265,7 +268,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    final baseUrl =
+    var baseUrl =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     try {
       String proxyURL = "https://cors-anywhere.herokuapp.com/";
@@ -282,7 +285,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
       widget.getPlaceDetailWithLatLng!(prediction);
     } catch (e) {
-      final errorHandler = ErrorHandler.internal().handleError(e);
+      var errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }
   }
