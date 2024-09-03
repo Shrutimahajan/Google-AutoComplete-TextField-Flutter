@@ -54,7 +54,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.containerHorizontalPadding,
       this.containerVerticalPadding,
       this.focusNode,
-      this.placeType,this.language='en'});
+      this.placeType,
+      this.language = 'en'});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -72,7 +73,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   bool isSearched = false;
 
   bool isCrossBtn = true;
-  late var _dio;
+  late Dio _dio;
 
   CancelToken? _cancelToken = CancelToken();
 
@@ -88,7 +89,6 @@ class _GooglePlaceAutoCompleteTextFieldState
         decoration: widget.boxDecoration ??
             BoxDecoration(
                 shape: BoxShape.rectangle,
-               
                 borderRadius: BorderRadius.all(Radius.circular(5))),
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -150,6 +150,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     try {
       String proxyURL = "https://cors-anywhere.herokuapp.com/";
       String url = kIsWeb ? proxyURL + apiURL : apiURL;
+      print("urlll $url");
 
       /// Add the custom header to the options
       final options = kIsWeb
@@ -183,7 +184,7 @@ class _GooglePlaceAutoCompleteTextFieldState
       this._overlayEntry = this._createOverlayEntry();
       Overlay.of(context)!.insert(this._overlayEntry!);
     } catch (e) {
-      var errorHandler = ErrorHandler.internal().handleError(e);
+      final errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }
   }
@@ -205,8 +206,8 @@ class _GooglePlaceAutoCompleteTextFieldState
   OverlayEntry? _createOverlayEntry() {
     if (context != null && context.findRenderObject() != null) {
       RenderBox renderBox = context.findRenderObject() as RenderBox;
-      var size = renderBox.size;
-      var offset = renderBox.localToGlobal(Offset.zero);
+      final size = renderBox.size;
+      final offset = renderBox.localToGlobal(Offset.zero);
       return OverlayEntry(
           builder: (context) => Positioned(
                 left: offset.dx,
@@ -217,34 +218,36 @@ class _GooglePlaceAutoCompleteTextFieldState
                   link: this._layerLink,
                   offset: Offset(0.0, size.height + 5.0),
                   child: Material(
+                      elevation: 5,
                       child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: alPredictions.length,
-                    separatorBuilder: (context, pos) =>
-                        widget.seperatedBuilder ?? SizedBox(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                          var selectedData = alPredictions[index];
-                          if (index < alPredictions.length) {
-                            widget.itemClick!(selectedData);
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: alPredictions.length,
+                        separatorBuilder: (context, pos) =>
+                            widget.seperatedBuilder ?? SizedBox(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return InkWell(
+                            onTap: () {
+                              final selectedData = alPredictions[index];
+                              if (index < alPredictions.length) {
+                                widget.itemClick!(selectedData);
 
-                            if (widget.isLatLngRequired) {
-                              getPlaceDetailsFromPlaceId(selectedData);
-                            }
-                            removeOverlay();
-                          }
+                                if (widget.isLatLngRequired) {
+                                  getPlaceDetailsFromPlaceId(selectedData);
+                                }
+                                removeOverlay();
+                              }
+                            },
+                            child: widget.itemBuilder != null
+                                ? widget.itemBuilder!(
+                                    context, index, alPredictions[index])
+                                : Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: Text(
+                                        alPredictions[index].description!)),
+                          );
                         },
-                        child: widget.itemBuilder != null
-                            ? widget.itemBuilder!(
-                                context, index, alPredictions[index])
-                            : Container(
-                                padding: EdgeInsets.all(10),
-                                child: Text(alPredictions[index].description!)),
-                      );
-                    },
-                  )),
+                      )),
                 ),
               ));
     }
@@ -262,9 +265,12 @@ class _GooglePlaceAutoCompleteTextFieldState
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    var url =
+    final baseUrl =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     try {
+      String proxyURL = "https://cors-anywhere.herokuapp.com/";
+      String url = kIsWeb ? proxyURL + baseUrl : baseUrl;
+      print("urlll $url");
       Response response = await _dio.get(
         url,
       );
@@ -276,7 +282,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 
       widget.getPlaceDetailWithLatLng!(prediction);
     } catch (e) {
-      var errorHandler = ErrorHandler.internal().handleError(e);
+      final errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }
   }
