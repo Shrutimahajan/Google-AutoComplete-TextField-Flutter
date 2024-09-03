@@ -88,8 +88,8 @@ class _GooglePlaceAutoCompleteTextFieldState
         decoration: widget.boxDecoration ??
             BoxDecoration(
                 shape: BoxShape.rectangle,
-                border: Border.all(color: Colors.grey, width: 0.6),
-                borderRadius: BorderRadius.all(Radius.circular(10))),
+               
+                borderRadius: BorderRadius.all(Radius.circular(5))),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
