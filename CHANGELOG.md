@@ -29,3 +29,15 @@
 ## 2.0.6
 
 * Support custom list item builder, error handled and minor fixes
+
+## 2.0.7
+
+* Update dio dependency and minor improvements 
+
+## 2.0.8
+
+* Bug fixes and improvements
+
+## 2.0.9
+
+* Filter added by PlaceType and language 
