@@ -33,6 +33,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   FocusNode? focusNode;
   PlaceType? placeType;
   String? language;
+  TextInputAction? textInputAction;
+  final VoidCallback? formSubmitCallback;
 
   final String? Function(String?, BuildContext)? validator;
 
@@ -65,7 +67,10 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.validator,
       this.latitude,
       this.longitude,
-      this.radius});
+      this.radius,
+      this.formSubmitCallback,
+      this.textInputAction,
+      this.clearData});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -111,6 +116,13 @@ class _GooglePlaceAutoCompleteTextFieldState
                 style: widget.textStyle,
                 controller: widget.textEditingController,
                 focusNode: widget.focusNode ?? FocusNode(),
+                textInputAction: widget.textInputAction ?? TextInputAction.done,
+                onFieldSubmitted: (value) {
+                  if(widget.formSubmitCallback!=null){
+                    widget.formSubmitCallback!();
+                  }
+
+                },
                 validator: (inputString) {
                   return widget.validator?.call(inputString, context);
                 },
@@ -280,7 +292,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     this._overlayEntry!.markNeedsBuild();
   }
 
- void getPlaceDetailsFromPlaceId(Prediction prediction) async {
+  void getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
     var url =
