@@ -40,4 +40,11 @@
 
 ## 2.0.9
 
-* Filter added by PlaceType and language 
+* Filter added by PlaceType and language
+
+
+## 2.1.0
+
+* Added Near By Search and Some Bug fixes and improvements
+
+
