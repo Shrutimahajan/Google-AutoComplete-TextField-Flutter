@@ -24,7 +24,7 @@ dependencies:
          // this method will return latlng with place detail
         print("placeDetails" + prediction.lng.toString());
         }, // this callback is called when isLatLngRequired is true
-        itmClick: (Prediction prediction) {
+        itemClick: (Prediction prediction) {
          controller.text=prediction.description;
           controller.selection = TextSelection.fromPosition(TextPosition(offset: prediction.description.length));
         }
