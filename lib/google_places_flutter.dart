@@ -259,13 +259,13 @@ class _GooglePlaceAutoCompleteTextFieldState
                         widget.seperatedBuilder ?? SizedBox(),
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
-                        onTap: () {
+                        onTap: () async {
                           var selectedData = alPredictions[index];
                           if (index < alPredictions.length) {
                             widget.itemClick!(selectedData);
 
                             if (widget.isLatLngRequired) {
-                              getPlaceDetailsFromPlaceId(selectedData);
+                             await getPlaceDetailsFromPlaceId(selectedData);
                             }
                             removeOverlay();
                           }
@@ -292,7 +292,7 @@ class _GooglePlaceAutoCompleteTextFieldState
     this._overlayEntry!.markNeedsBuild();
   }
 
-  void getPlaceDetailsFromPlaceId(Prediction prediction) async {
+  Future<void> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
     var url =
