@@ -51,6 +51,8 @@ dependencies:
          containerHorizontalPadding: 10,
          // place type
         placeType: PlaceType.geocode,
+        // keyboard type (defaults to TextInputType.streetAddress)
+        keyboardType: TextInputType.text, // optional - defaults to streetAddress for better address input
          
          
         

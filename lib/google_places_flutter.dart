@@ -35,6 +35,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   String? language;
   TextInputAction? textInputAction;
   final VoidCallback? formSubmitCallback;
+  TextInputType? keyboardType;
 
   final String? Function(String?, BuildContext)? validator;
 
@@ -70,6 +71,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.radius,
       this.formSubmitCallback,
       this.textInputAction,
+      this.keyboardType,
       this.clearData});
 
   @override
@@ -116,6 +118,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                 style: widget.textStyle,
                 controller: widget.textEditingController,
                 focusNode: widget.focusNode ?? FocusNode(),
+                keyboardType: widget.keyboardType ?? TextInputType.streetAddress,
                 textInputAction: widget.textInputAction ?? TextInputAction.done,
                 onFieldSubmitted: (value) {
                   if(widget.formSubmitCallback!=null){
