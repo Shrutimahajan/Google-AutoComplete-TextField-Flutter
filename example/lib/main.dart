@@ -92,6 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         seperatedBuilder: Divider(),
         containerHorizontalPadding: 10,
+        
+        // Optional: specify keyboard type (defaults to TextInputType.streetAddress)
+        // keyboardType: TextInputType.text,
 
 
         // OPTIONAL// If you want to customize list view item builder
