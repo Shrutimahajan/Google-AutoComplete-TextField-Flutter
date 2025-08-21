@@ -47,9 +47,9 @@
 
 * Added Near By Search and Some Bug fixes and improvements
 
-## Unreleased
+## 2.1.1
 
 * Added `keyboardType` parameter to customize the keyboard input type (defaults to `TextInputType.streetAddress` for better address input experience)
-* Made keyboard type configurable while maintaining backward compatibility
+* Upgrade Rx library 
 
 
