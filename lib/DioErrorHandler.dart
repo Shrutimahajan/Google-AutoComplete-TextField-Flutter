@@ -35,7 +35,9 @@ class DioErrorHandler {
 
           if (dioError.response?.data['message'] != null) {
             errorResponse.message = dioError.response?.data['message'];
-          } else {
+          } else if (dioError.response?.data['error'] != null) {
+            errorResponse.message = dioError.response?.data['error']['message'];
+          }  else {
             if ((dioError.response?.statusMessage ?? "").isNotEmpty)
               errorResponse.message = dioError.response?.statusMessage;
             else

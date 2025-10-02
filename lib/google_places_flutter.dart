@@ -2,11 +2,14 @@ library google_places_flutter;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_places_flutter/model/new_place_details.dart';
+import 'package:google_places_flutter/model/new_prediction.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/place_type.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
 import 'package:dio/dio.dart';
+import 'package:google_places_flutter/model/prediction_adapter.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'DioErrorHandler.dart';
@@ -45,6 +48,13 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   /// This is expressed in **meters**
   final int? radius;
 
+  /// Whether to use the new Google Places API (Places API v1).
+  ///
+  /// - When `true`:
+  ///   - Autocomplete: https://developers.google.com/maps/documentation/places/web-service/place-autocomplete
+  ///   - Place Details: https://developers.google.com/maps/documentation/places/web-service/place-details
+  final bool useNewApi;
+
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
       required this.googleAPIKey,
@@ -72,7 +82,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.formSubmitCallback,
       this.textInputAction,
       this.keyboardType,
-      this.clearData});
+      this.clearData,
+      this.useNewApi = false});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -147,6 +158,65 @@ class _GooglePlaceAutoCompleteTextFieldState
         ),
       ),
     );
+  }
+
+  /// https://developers.google.com/maps/documentation/places/web-service/place-autocomplete
+  getNewLocation(String text) async {
+    try {
+      String apiURL = 'https://places.googleapis.com/v1/places:autocomplete';
+
+      Options options = Options(
+        headers: {
+          'X-Goog-Api-Key': widget.googleAPIKey,
+        },
+      );
+      Map data = {
+        'input': text,
+        if (widget.language != null) 'languageCode': widget.language,
+        if (widget.countries != null && widget.countries!.isNotEmpty) 'includedRegionCodes': widget.countries,
+        if (widget.latitude != null && widget.longitude != null && widget.radius != null)
+          'locationBias': {
+            'circle': {
+              'center': {'latitude': widget.latitude, 'longitude': widget.longitude},
+              'radius': widget.radius
+            }
+          }
+      };
+
+      if (_cancelToken?.isCancelled == false) {
+        _cancelToken?.cancel();
+        _cancelToken = CancelToken();
+      }
+
+      Response response = await _dio.post(apiURL, data: data, options: options);
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+      Map map = response.data;
+      if (map.containsKey("error_message")) {
+        throw response.data;
+      }
+
+      NewPlacesAutocompleteResponse subscriptionResponse = NewPlacesAutocompleteResponse.fromJson(response.data);
+
+      if (text.length == 0) {
+        alPredictions.clear();
+        this._overlayEntry!.remove();
+        return;
+      }
+
+      isSearched = false;
+      alPredictions.clear();
+      if ((subscriptionResponse.suggestions?.length ?? 0) > 0 && (widget.textEditingController.text.toString().trim()).isNotEmpty) {
+        alPredictions.addAll(subscriptionResponse.suggestions!.map((e) => PredictionAdapter.fromSuggestion(e)));
+      }
+
+      this._overlayEntry = null;
+      this._overlayEntry = this._createOverlayEntry();
+      Overlay.of(context).insert(this._overlayEntry!);
+    } catch (e) {
+      var errorHandler = ErrorHandler.internal().handleError(e);
+      _showSnackBar("${errorHandler.message}");
+    }
   }
 
   getLocation(String text) async {
@@ -232,7 +302,11 @@ class _GooglePlaceAutoCompleteTextFieldState
 
   textChanged(String text) async {
     if (text.isNotEmpty) {
-      getLocation(text);
+      if (widget.useNewApi) {
+        getNewLocation(text);
+      } else {
+        getLocation(text);
+      }
     } else {
       alPredictions.clear();
       this._overlayEntry!.remove();
@@ -268,7 +342,11 @@ class _GooglePlaceAutoCompleteTextFieldState
                             widget.itemClick!(selectedData);
 
                             if (widget.isLatLngRequired) {
-                             await getPlaceDetailsFromPlaceId(selectedData);
+                              if (widget.useNewApi) {
+                                await getNewPlaceDetailsFromPlaceId(selectedData);
+                              } else {
+                                await getPlaceDetailsFromPlaceId(selectedData);
+                              }
                             }
                             removeOverlay();
                           }
@@ -293,6 +371,26 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     Overlay.of(context).insert(this._overlayEntry!);
     this._overlayEntry!.markNeedsBuild();
+  }
+
+  /// https://developers.google.com/maps/documentation/places/web-service/place-details
+  Future<void> getNewPlaceDetailsFromPlaceId(Prediction prediction) async {
+    var url = "https://places.googleapis.com/v1/places/${prediction.placeId}?fields=id,displayName,location&key=${widget.googleAPIKey}";
+    try {
+      Response response = await _dio.get(
+        url,
+      );
+
+      NewPlaceDetails placeDetails = NewPlaceDetails.fromJson(response.data);
+
+      prediction.lat = placeDetails.location?.latitude?.toString();
+      prediction.lng = placeDetails.location?.longitude?.toString();
+
+      widget.getPlaceDetailWithLatLng!(prediction);
+    } catch (e) {
+      var errorHandler = ErrorHandler.internal().handleError(e);
+      _showSnackBar("${errorHandler.message}");
+    }
   }
 
   Future<void> getPlaceDetailsFromPlaceId(Prediction prediction) async {
