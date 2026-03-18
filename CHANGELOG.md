@@ -52,4 +52,9 @@
 * Added `keyboardType` parameter to customize the keyboard input type (defaults to `TextInputType.streetAddress` for better address input experience)
 * Upgrade Rx library 
 
+## Unreleased
 
+* Added overlayHeight and overlayWidth optional parameters
+* Fixed bug where overlays weren't getting properly cleared
+* Added `dispose()` method to prevent memory leaks
+* Added `mounted` check after async call

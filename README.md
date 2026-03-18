@@ -53,6 +53,10 @@ dependencies:
         placeType: PlaceType.geocode,
         // keyboard type (defaults to TextInputType.streetAddress)
         keyboardType: TextInputType.text, // optional - defaults to streetAddress for better address input
+        // the height of the suggestions overlay
+        overlayHeight: 200.0, // optional - defaults to double.infinity
+        // the width of the suggestions overlay
+        overlayWidth: 300.0, // optional - defaults to the width of the text input field
          
          
         
