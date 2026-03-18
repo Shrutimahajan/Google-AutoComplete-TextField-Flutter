@@ -36,6 +36,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   TextInputAction? textInputAction;
   final VoidCallback? formSubmitCallback;
   TextInputType? keyboardType;
+  double? overlayWidth;
+  double? overlayHeight;
 
   final String? Function(String?, BuildContext)? validator;
 
@@ -72,6 +74,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.formSubmitCallback,
       this.textInputAction,
       this.keyboardType,
+      this.overlayHeight,
+      this.overlayWidth,
       this.clearData});
 
   @override
@@ -252,47 +256,60 @@ class _GooglePlaceAutoCompleteTextFieldState
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     var size = renderBox.size;
     var offset = renderBox.localToGlobal(Offset.zero);
+    final double width = widget.overlayWidth != null
+                ? widget.overlayWidth! > size.width
+                  ? size.width
+                  : widget.overlayWidth!
+                : size.width;
+    final double widthOffset = widget.overlayWidth != null
+                    ? (size.width - width) / 2
+                    : 0.0;
     return OverlayEntry(
       builder: (context) => Positioned(
         left: offset.dx,
         top: size.height + offset.dy,
-        width: size.width,
+        width: width,
         child: CompositedTransformFollower(
           showWhenUnlinked: false,
           link: this._layerLink,
-          offset: Offset(0.0, size.height + 5.0),
-          child: Material(
-            child: ListView.separated(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              itemCount: alPredictions.length,
-              separatorBuilder: (context, pos) =>
-                  widget.seperatedBuilder ?? SizedBox(),
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () async {
-                    var selectedData = alPredictions[index];
-                    if (index < alPredictions.length) {
-                      widget.itemClick!(selectedData);
+          offset: Offset(widthOffset, size.height + 5.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: widget.overlayHeight ?? double.infinity,
+            ),
+            child: Material(
+              child: ListView.separated(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                itemCount: alPredictions.length,
+                separatorBuilder: (context, pos) =>
+                    widget.seperatedBuilder ?? SizedBox(),
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () async {
+                      var selectedData = alPredictions[index];
+                      if (index < alPredictions.length) {
+                        widget.itemClick!(selectedData);
 
-                      if (widget.isLatLngRequired) {
-                        await getPlaceDetailsFromPlaceId(selectedData);
+                        if (widget.isLatLngRequired) {
+                          await getPlaceDetailsFromPlaceId(selectedData);
+                        }
+                        removeOverlay();
                       }
-                      removeOverlay();
-                    }
-                  },
-                  child: widget.itemBuilder != null
-                      ? widget.itemBuilder!(
-                          context, index, alPredictions[index])
-                      : Container(
-                          padding: EdgeInsets.all(10),
-                          child: Text(alPredictions[index].description!)),
-                );
-              },
-            )
+                    },
+                    child: widget.itemBuilder != null
+                        ? widget.itemBuilder!(
+                            context, index, alPredictions[index])
+                        : Container(
+                            padding: EdgeInsets.all(10),
+                            child: Text(alPredictions[index].description!)),
+                  );
+                },
+              ),
+            ),
           ),
         ),
-      )
+      ),
     );
   }
 

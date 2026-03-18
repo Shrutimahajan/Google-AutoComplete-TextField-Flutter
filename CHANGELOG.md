@@ -54,6 +54,7 @@
 
 ## Unreleased
 
+* Added overlayHeight and overlayWidth optional parameters
 * Fixed bug where overlays weren't getting properly cleared
 * Added `dispose()` method to prevent memory leaks
 * Added `mounted` check after async call
