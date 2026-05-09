@@ -44,6 +44,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
 
   /// This is expressed in **meters**
   final int? radius;
+  final bool handleControllerChange;
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
@@ -72,7 +73,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.formSubmitCallback,
       this.textInputAction,
       this.keyboardType,
-      this.clearData});
+      this.clearData,
+      this.handleControllerChange = false});
 
   @override
   _GooglePlaceAutoCompleteTextFieldState createState() =>
@@ -85,7 +87,6 @@ class _GooglePlaceAutoCompleteTextFieldState
   OverlayEntry? _overlayEntry;
   List<Prediction> alPredictions = [];
 
-  TextEditingController controller = TextEditingController();
   final LayerLink _layerLink = LayerLink();
   bool isSearched = false;
 
@@ -93,6 +94,40 @@ class _GooglePlaceAutoCompleteTextFieldState
   late var _dio;
 
   CancelToken? _cancelToken = CancelToken();
+
+  @override
+  void initState() {
+    super.initState();
+    _dio = Dio();
+    subject.stream
+        .distinct()
+        .debounceTime(Duration(milliseconds: widget.debounceTime))
+        .listen(textChanged);
+    if(widget.handleControllerChange){
+      widget.textEditingController.addListener(_handleControllerChange);
+    }
+  }
+
+  void _handleControllerChange() {
+    final string = widget.textEditingController.text;
+    subject.add(string);
+    if (widget.isCrossBtnShown) {
+      isCrossBtn = string.isNotEmpty ? true : false;
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    if(widget.handleControllerChange){
+      widget.textEditingController.removeListener(_handleControllerChange);
+      subject.close();
+      _cancelToken?.cancel();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -218,16 +253,6 @@ class _GooglePlaceAutoCompleteTextFieldState
       var errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _dio = Dio();
-    subject.stream
-        .distinct()
-        .debounceTime(Duration(milliseconds: widget.debounceTime))
-        .listen(textChanged);
   }
 
   textChanged(String text) async {
