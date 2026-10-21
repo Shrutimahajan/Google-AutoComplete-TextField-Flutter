@@ -18,7 +18,11 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   bool isLatLngRequired = true;
 
   TextStyle textStyle;
-  String googleAPIKey;
+  String googleAPIKey = '';
+  AutocompleteProxyBuilder? autocompleteProxy;
+  Map<String, dynamic>? autocompleteProxyHeaders;
+  PlaceDetailsProxyBuilder? placeDetailsProxy;
+  Map<String, dynamic>? placeDetailsProxyHeaders;
   int debounceTime = 600;
   List<String>? countries = [];
   TextEditingController textEditingController = TextEditingController();
@@ -47,7 +51,11 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
 
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
-      required this.googleAPIKey,
+      this.googleAPIKey = '',
+      this.autocompleteProxy,
+      this.autocompleteProxyHeaders,
+      this.placeDetailsProxy,
+      this.placeDetailsProxyHeaders,
       this.debounceTime = 600,
       this.inputDecoration = const InputDecoration(),
       this.itemClick,
@@ -75,12 +83,10 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.clearData});
 
   @override
-  _GooglePlaceAutoCompleteTextFieldState createState() =>
-      _GooglePlaceAutoCompleteTextFieldState();
+  _GooglePlaceAutoCompleteTextFieldState createState() => _GooglePlaceAutoCompleteTextFieldState();
 }
 
-class _GooglePlaceAutoCompleteTextFieldState
-    extends State<GooglePlaceAutoCompleteTextField> {
+class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoCompleteTextField> {
   final subject = new PublishSubject<String>();
   OverlayEntry? _overlayEntry;
   List<Prediction> alPredictions = [];
@@ -90,7 +96,7 @@ class _GooglePlaceAutoCompleteTextFieldState
   bool isSearched = false;
 
   bool isCrossBtn = true;
-  late var _dio;
+  late Dio _dio;
 
   CancelToken? _cancelToken = CancelToken();
 
@@ -153,6 +159,10 @@ class _GooglePlaceAutoCompleteTextFieldState
     String apiURL =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}&language=${widget.language}";
 
+    if (widget.autocompleteProxy != null) {
+      apiURL = widget.autocompleteProxy!(text, widget.language);
+    }
+
     if (widget.countries != null) {
       // in
 
@@ -170,11 +180,8 @@ class _GooglePlaceAutoCompleteTextFieldState
       apiURL += "&types=${widget.placeType?.apiString}";
     }
 
-    if (widget.latitude != null &&
-        widget.longitude != null &&
-        widget.radius != null) {
-      apiURL = apiURL +
-          "&location=${widget.latitude},${widget.longitude}&radius=${widget.radius}";
+    if (widget.latitude != null && widget.longitude != null && widget.radius != null) {
+      apiURL = apiURL + "&location=${widget.latitude},${widget.longitude}&radius=${widget.radius}";
     }
 
     if (_cancelToken?.isCancelled == false) {
@@ -187,7 +194,8 @@ class _GooglePlaceAutoCompleteTextFieldState
       String proxyURL = "https://cors-anywhere.herokuapp.com/";
       String url = kIsWeb ? proxyURL + apiURL : apiURL;
 
-      Response response = await _dio.get(url);
+      Response response =
+          await _dio.get(url, options: Options(headers: widget.autocompleteProxyHeaders));
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
       Map map = response.data;
@@ -262,8 +270,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     itemCount: alPredictions.length,
-                    separatorBuilder: (context, pos) =>
-                        widget.seperatedBuilder ?? SizedBox(),
+                    separatorBuilder: (context, pos) => widget.seperatedBuilder ?? SizedBox(),
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
                         onTap: () async {
@@ -278,8 +285,7 @@ class _GooglePlaceAutoCompleteTextFieldState
                           }
                         },
                         child: widget.itemBuilder != null
-                            ? widget.itemBuilder!(
-                                context, index, alPredictions[index])
+                            ? widget.itemBuilder!(context, index, alPredictions[index])
                             : Container(
                                 padding: EdgeInsets.all(10),
                                 child: Text(alPredictions[index].description!)),
@@ -304,10 +310,14 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     var url =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+
+    if (widget.placeDetailsProxy != null) {
+      url = widget.placeDetailsProxy!(prediction.placeId);
+    }
+
     try {
-      Response response = await _dio.get(
-        url,
-      );
+      Response response =
+          await _dio.get(url, options: Options(headers: widget.autocompleteProxyHeaders));
 
       PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
@@ -357,8 +367,7 @@ class _GooglePlaceAutoCompleteTextFieldState
 }
 
 PlacesAutocompleteResponse parseResponse(Map responseBody) {
-  return PlacesAutocompleteResponse.fromJson(
-      responseBody as Map<String, dynamic>);
+  return PlacesAutocompleteResponse.fromJson(responseBody as Map<String, dynamic>);
 }
 
 PlaceDetails parsePlaceDetailMap(Map responseBody) {
@@ -366,8 +375,10 @@ PlaceDetails parsePlaceDetailMap(Map responseBody) {
 }
 
 typedef ItemClick = void Function(Prediction postalCodeResponse);
-typedef GetPlaceDetailswWithLatLng = void Function(
-    Prediction postalCodeResponse);
+typedef GetPlaceDetailswWithLatLng = void Function(Prediction postalCodeResponse);
 
-typedef ListItemBuilder = Widget Function(
-    BuildContext context, int index, Prediction prediction);
+typedef ListItemBuilder = Widget Function(BuildContext context, int index, Prediction prediction);
+
+typedef AutocompleteProxyBuilder = String Function(String text, String? language);
+
+typedef PlaceDetailsProxyBuilder = String Function(String? placeid);
